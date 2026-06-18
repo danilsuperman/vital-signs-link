@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TreatmentRouteImport } from './routes/treatment'
 import { Route as TeamRouteImport } from './routes/team'
+import { Route as MoreRouteImport } from './routes/more'
 import { Route as HealthRouteImport } from './routes/health'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -22,6 +23,11 @@ const TreatmentRoute = TreatmentRouteImport.update({
 const TeamRoute = TeamRouteImport.update({
   id: '/team',
   path: '/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MoreRoute = MoreRouteImport.update({
+  id: '/more',
+  path: '/more',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HealthRoute = HealthRouteImport.update({
@@ -38,12 +44,14 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/health': typeof HealthRoute
+  '/more': typeof MoreRoute
   '/team': typeof TeamRoute
   '/treatment': typeof TreatmentRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/health': typeof HealthRoute
+  '/more': typeof MoreRoute
   '/team': typeof TeamRoute
   '/treatment': typeof TreatmentRoute
 }
@@ -51,20 +59,22 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/health': typeof HealthRoute
+  '/more': typeof MoreRoute
   '/team': typeof TeamRoute
   '/treatment': typeof TreatmentRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/health' | '/team' | '/treatment'
+  fullPaths: '/' | '/health' | '/more' | '/team' | '/treatment'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/health' | '/team' | '/treatment'
-  id: '__root__' | '/' | '/health' | '/team' | '/treatment'
+  to: '/' | '/health' | '/more' | '/team' | '/treatment'
+  id: '__root__' | '/' | '/health' | '/more' | '/team' | '/treatment'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HealthRoute: typeof HealthRoute
+  MoreRoute: typeof MoreRoute
   TeamRoute: typeof TeamRoute
   TreatmentRoute: typeof TreatmentRoute
 }
@@ -83,6 +93,13 @@ declare module '@tanstack/react-router' {
       path: '/team'
       fullPath: '/team'
       preLoaderRoute: typeof TeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/more': {
+      id: '/more'
+      path: '/more'
+      fullPath: '/more'
+      preLoaderRoute: typeof MoreRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/health': {
@@ -105,6 +122,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HealthRoute: HealthRoute,
+  MoreRoute: MoreRoute,
   TeamRoute: TeamRoute,
   TreatmentRoute: TreatmentRoute,
 }
