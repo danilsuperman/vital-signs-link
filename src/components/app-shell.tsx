@@ -10,9 +10,33 @@ const NAV = [
   { to: "/more", label: "Еще", icon: Menu },
 ] as const;
 
-export function AppShell({ children }: { children: ReactNode }) {
+export function PageNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  return (
+    <nav className="surface-card mb-5 flex items-center gap-1 overflow-x-auto p-1.5">
+      {NAV.map((item) => {
+        const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
+        const Icon = item.icon;
+        return (
+          <Link
+            key={item.to}
+            to={item.to}
+            className={`inline-flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+              active
+                ? "gradient-primary text-primary-foreground shadow-[var(--shadow-glow)]"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+            }`}
+          >
+            <Icon className="h-4 w-4" />
+            {item.label}
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
 
+export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col">
       <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur-xl">
@@ -28,25 +52,6 @@ export function AppShell({ children }: { children: ReactNode }) {
               </div>
             </div>
           </Link>
-
-          <nav className="hidden items-center gap-1 md:flex">
-            {NAV.map((item) => {
-              const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
-              return (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                    active
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
-          </nav>
 
           <div className="flex items-center gap-1.5">
             <button
@@ -75,31 +80,10 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-28 pt-5 md:px-6 md:pb-10">
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-10 pt-5 md:px-6">
+        <PageNav />
         {children}
       </main>
-
-      {/* Mobile bottom nav */}
-      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border/70 bg-background/95 backdrop-blur-xl md:hidden">
-        <div className="mx-auto grid max-w-6xl grid-cols-5">
-          {NAV.map((item) => {
-            const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.to}
-                to={item.to}
-                className={`flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium transition-colors ${
-                  active ? "text-primary" : "text-muted-foreground"
-                }`}
-              >
-                <Icon className={`h-5 w-5 ${active ? "stroke-[2.4]" : ""}`} />
-                {item.label}
-              </Link>
-            );
-          })}
-        </div>
-      </nav>
     </div>
   );
 }
