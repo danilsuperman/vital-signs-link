@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import {
   ArrowRight,
   CalendarClock,
@@ -12,9 +13,23 @@ import {
   Stethoscope,
   TriangleAlert,
   UserPlus,
+  MessageSquare,
+  Ambulance,
+  CheckCircle2,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { SectionTitle, StatusBadge } from "@/components/ui/status";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -32,8 +47,13 @@ const activeCases = [
   { slug: "deficit-zheleza", title: "Дефицит железа", status: "Диагностика", tone: "accent" as const },
 ];
 
+type ModalKey = null | "incident" | "doctor" | "emergency";
+
 function HomePage() {
   const profileProgress = 64;
+  const [modal, setModal] = useState<ModalKey>(null);
+  const [symptoms, setSymptoms] = useState("");
+  const close = () => setModal(null);
 
   return (
     <AppShell>
@@ -188,10 +208,25 @@ function HomePage() {
         <section>
           <SectionTitle title="Быстрые действия" />
           <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-            <QuickAction icon={TriangleAlert} label="Что случилось?" tone="warning" />
-            <QuickAction icon={UserPlus} label="Нужен врач" tone="primary" />
+            <QuickAction
+              icon={TriangleAlert}
+              label="Что случилось?"
+              tone="warning"
+              onClick={() => setModal("incident")}
+            />
+            <QuickAction
+              icon={UserPlus}
+              label="Нужен врач"
+              tone="primary"
+              onClick={() => setModal("doctor")}
+            />
             <QuickAction icon={FileUp} label="Загрузить документ" tone="accent" />
-            <QuickAction icon={Phone} label="Срочная помощь" tone="critical" />
+            <QuickAction
+              icon={Phone}
+              label="Срочная помощь"
+              tone="critical"
+              onClick={() => setModal("emergency")}
+            />
           </div>
         </section>
 
@@ -220,7 +255,201 @@ function HomePage() {
           </ol>
         </section>
       </div>
+
+      {/* === Что случилось? === */}
+      <Dialog open={modal === "incident"} onOpenChange={(o) => !o && close()}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <span className="grid h-9 w-9 place-items-center rounded-lg bg-warning/20 text-warning-foreground">
+                <TriangleAlert className="h-5 w-5" />
+              </span>
+              Что случилось?
+            </DialogTitle>
+            <DialogDescription>
+              Опишите симптомы — система определит подходящего специалиста и срочность.
+            </DialogDescription>
+          </DialogHeader>
+          <Textarea
+            value={symptoms}
+            onChange={(e) => setSymptoms(e.target.value)}
+            placeholder="Например: тянущая боль в левой ноге, тяжесть к вечеру..."
+            rows={5}
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={close}>Отмена</Button>
+            <Button
+              onClick={() => {
+                if (!symptoms.trim()) {
+                  toast.error("Опишите, что вас беспокоит");
+                  return;
+                }
+                toast.success("Жалоба отправлена", {
+                  description: "Дежурный терапевт ответит в течение 15 минут.",
+                  icon: <CheckCircle2 className="h-4 w-4" />,
+                });
+                setSymptoms("");
+                close();
+              }}
+            >
+              Отправить
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* === Нужен врач === */}
+      <Dialog open={modal === "doctor"} onOpenChange={(o) => !o && close()}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary/10 text-primary">
+                <UserPlus className="h-5 w-5" />
+              </span>
+              Нужен врач
+            </DialogTitle>
+            <DialogDescription>Выберите способ обращения к специалисту.</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-2">
+            <DoctorOption
+              icon={MessageSquare}
+              title="Чат с дежурным терапевтом"
+              meta="Ответ ~ 5 минут · бесплатно"
+              onClick={() => {
+                toast.success("Открываем чат с дежурным терапевтом…");
+                close();
+              }}
+            />
+            <DoctorOption
+              icon={CalendarClock}
+              title="Записаться к специалисту"
+              meta="Подберём врача по вашему случаю"
+              to="/team"
+              onClick={close}
+            />
+            <DoctorOption
+              icon={Stethoscope}
+              title="Видеоконсультация сейчас"
+              meta="Свободные врачи онлайн"
+              onClick={() => {
+                toast.success("Ищем доступного врача…");
+                close();
+              }}
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* === Срочная помощь === */}
+      <Dialog open={modal === "emergency"} onOpenChange={(o) => !o && close()}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-critical">
+              <span className="grid h-9 w-9 place-items-center rounded-lg bg-critical/15 text-critical">
+                <Ambulance className="h-5 w-5" />
+              </span>
+              Срочная помощь
+            </DialogTitle>
+            <DialogDescription>
+              Если есть угроза жизни — звоните 112. Ниже — быстрый доступ к экстренным службам.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-2">
+            <a
+              href="tel:112"
+              className="surface-card surface-card-hover flex items-center gap-3 p-3"
+              onClick={close}
+            >
+              <span className="grid h-10 w-10 place-items-center rounded-lg bg-critical text-white">
+                <Phone className="h-5 w-5" />
+              </span>
+              <div>
+                <div className="text-sm font-semibold text-foreground">112 — Единая служба</div>
+                <div className="text-xs text-muted-foreground">Скорая, МЧС, полиция</div>
+              </div>
+            </a>
+            <a
+              href="tel:103"
+              className="surface-card surface-card-hover flex items-center gap-3 p-3"
+              onClick={close}
+            >
+              <span className="grid h-10 w-10 place-items-center rounded-lg bg-critical/15 text-critical">
+                <Ambulance className="h-5 w-5" />
+              </span>
+              <div>
+                <div className="text-sm font-semibold text-foreground">103 — Скорая помощь</div>
+                <div className="text-xs text-muted-foreground">Прямой вызов бригады</div>
+              </div>
+            </a>
+            <button
+              type="button"
+              onClick={() => {
+                toast.success("Вызываем дежурного врача Lify…", {
+                  description: "Перезвонит в течение 2 минут.",
+                });
+                close();
+              }}
+              className="surface-card surface-card-hover flex items-center gap-3 p-3 text-left"
+            >
+              <span className="grid h-10 w-10 place-items-center rounded-lg bg-primary/10 text-primary">
+                <Stethoscope className="h-5 w-5" />
+              </span>
+              <div>
+                <div className="text-sm font-semibold text-foreground">Дежурный врач Lify</div>
+                <div className="text-xs text-muted-foreground">Перезвоним в течение 2 минут</div>
+              </div>
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </AppShell>
+  );
+}
+
+function DoctorOption({
+  icon: Icon,
+  title,
+  meta,
+  to,
+  onClick,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  meta: string;
+  to?: string;
+  onClick?: () => void;
+}) {
+  const inner = (
+    <>
+      <span className="grid h-10 w-10 place-items-center rounded-lg bg-primary/10 text-primary">
+        <Icon className="h-5 w-5" />
+      </span>
+      <div className="flex-1">
+        <div className="text-sm font-semibold text-foreground">{title}</div>
+        <div className="text-xs text-muted-foreground">{meta}</div>
+      </div>
+      <ArrowRight className="h-4 w-4 text-muted-foreground" />
+    </>
+  );
+  if (to) {
+    return (
+      <Link
+        to={to}
+        onClick={onClick}
+        className="surface-card surface-card-hover flex items-center gap-3 p-3"
+      >
+        {inner}
+      </Link>
+    );
+  }
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="surface-card surface-card-hover flex items-center gap-3 p-3 text-left"
+    >
+      {inner}
+    </button>
   );
 }
 
@@ -228,10 +457,12 @@ function QuickAction({
   icon: Icon,
   label,
   tone,
+  onClick,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   tone: "primary" | "warning" | "accent" | "critical";
+  onClick?: () => void;
 }) {
   const tones: Record<typeof tone, string> = {
     primary: "bg-primary/10 text-primary",
@@ -242,6 +473,7 @@ function QuickAction({
   return (
     <button
       type="button"
+      onClick={onClick}
       className="surface-card surface-card-hover flex flex-col items-start gap-3 p-4 text-left"
     >
       <div className={`grid h-10 w-10 place-items-center rounded-xl ${tones[tone]}`}>
