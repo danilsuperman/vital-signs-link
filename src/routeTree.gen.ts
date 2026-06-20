@@ -14,6 +14,7 @@ import { Route as TeamRouteImport } from './routes/team'
 import { Route as MoreRouteImport } from './routes/more'
 import { Route as HealthRouteImport } from './routes/health'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiIncidentChatRouteImport } from './routes/api/incident-chat'
 
 const TreatmentRoute = TreatmentRouteImport.update({
   id: '/treatment',
@@ -40,6 +41,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiIncidentChatRoute = ApiIncidentChatRouteImport.update({
+  id: '/api/incident-chat',
+  path: '/api/incident-chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/more': typeof MoreRoute
   '/team': typeof TeamRoute
   '/treatment': typeof TreatmentRoute
+  '/api/incident-chat': typeof ApiIncidentChatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/more': typeof MoreRoute
   '/team': typeof TeamRoute
   '/treatment': typeof TreatmentRoute
+  '/api/incident-chat': typeof ApiIncidentChatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,27 @@ export interface FileRoutesById {
   '/more': typeof MoreRoute
   '/team': typeof TeamRoute
   '/treatment': typeof TreatmentRoute
+  '/api/incident-chat': typeof ApiIncidentChatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/health' | '/more' | '/team' | '/treatment'
+  fullPaths:
+    | '/'
+    | '/health'
+    | '/more'
+    | '/team'
+    | '/treatment'
+    | '/api/incident-chat'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/health' | '/more' | '/team' | '/treatment'
-  id: '__root__' | '/' | '/health' | '/more' | '/team' | '/treatment'
+  to: '/' | '/health' | '/more' | '/team' | '/treatment' | '/api/incident-chat'
+  id:
+    | '__root__'
+    | '/'
+    | '/health'
+    | '/more'
+    | '/team'
+    | '/treatment'
+    | '/api/incident-chat'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +99,7 @@ export interface RootRouteChildren {
   MoreRoute: typeof MoreRoute
   TeamRoute: typeof TeamRoute
   TreatmentRoute: typeof TreatmentRoute
+  ApiIncidentChatRoute: typeof ApiIncidentChatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,6 +139,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/incident-chat': {
+      id: '/api/incident-chat'
+      path: '/api/incident-chat'
+      fullPath: '/api/incident-chat'
+      preLoaderRoute: typeof ApiIncidentChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +155,7 @@ const rootRouteChildren: RootRouteChildren = {
   MoreRoute: MoreRoute,
   TeamRoute: TeamRoute,
   TreatmentRoute: TreatmentRoute,
+  ApiIncidentChatRoute: ApiIncidentChatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

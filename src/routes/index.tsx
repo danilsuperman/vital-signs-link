@@ -31,14 +31,13 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import doctorPhoto from "@/assets/doctor-petrov.jpg";
+import { IncidentChatDialog } from "@/components/incident-chat-dialog";
+import { useCases, type StoredCase } from "@/lib/cases-store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
