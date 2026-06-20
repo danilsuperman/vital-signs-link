@@ -454,49 +454,9 @@ function HomePage() {
         </footer>
       </div>
 
-      {/* === Что случилось? === */}
-      <Dialog open={modal === "incident"} onOpenChange={(o) => !o && close()}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <span className="grid h-9 w-9 place-items-center rounded-lg bg-warning/20 text-warning-foreground">
-                <TriangleAlert className="h-5 w-5" />
-              </span>
-              Новое обращение
-            </DialogTitle>
-            <DialogDescription>
-              Опишите симптомы — система определит подходящего специалиста и срочность.
-            </DialogDescription>
-          </DialogHeader>
-          <Textarea
-            value={symptoms}
-            onChange={(e) => setSymptoms(e.target.value)}
-            placeholder="Например: тянущая боль в левой ноге, тяжесть к вечеру..."
-            rows={5}
-          />
-          <DialogFooter>
-            <Button variant="outline" onClick={close}>
-              Отмена
-            </Button>
-            <Button
-              onClick={() => {
-                if (!symptoms.trim()) {
-                  toast.error("Опишите, что вас беспокоит");
-                  return;
-                }
-                toast.success("Жалоба отправлена", {
-                  description: "Дежурный терапевт ответит в течение 15 минут.",
-                  icon: <CheckCircle2 className="h-4 w-4" />,
-                });
-                setSymptoms("");
-                close();
-              }}
-            >
-              Отправить
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* === Что случилось? — чат с ИИ-врачом === */}
+      <IncidentChatDialog open={modal === "incident"} onOpenChange={(o) => !o && close()} />
+
 
       {/* === Нужен врач === */}
       <Dialog open={modal === "doctor"} onOpenChange={(o) => !o && close()}>
