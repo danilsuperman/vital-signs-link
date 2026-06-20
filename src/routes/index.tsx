@@ -20,7 +20,6 @@ import {
   Plus,
   CalendarPlus,
   Activity,
-  ShieldCheck,
   Send,
   Youtube,
   Instagram,
