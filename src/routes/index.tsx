@@ -10,7 +10,6 @@ import {
   Phone,
   Sparkles,
   Stethoscope,
-  TriangleAlert,
   UserPlus,
   MessageSquare,
   Ambulance,
@@ -24,6 +23,8 @@ import {
   Youtube,
   Instagram,
   Music2,
+  FlaskRound,
+  Users,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { SectionTitle, StatusBadge } from "@/components/ui/status";
