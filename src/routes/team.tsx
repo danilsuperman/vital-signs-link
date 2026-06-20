@@ -153,7 +153,7 @@ function ActionBtn({
   label: string;
 }) {
   return (
-    <button className="flex flex-col items-center gap-1 rounded-lg bg-muted/60 py-2 text-[11px] font-medium text-foreground hover:bg-secondary">
+    <button className="flex flex-col items-center gap-1 rounded-xl bg-muted/60 py-2 text-[11px] font-medium text-foreground hover:bg-secondary">
       <Icon className="h-4 w-4 text-primary" />
       {label}
     </button>
