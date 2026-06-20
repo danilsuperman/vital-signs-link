@@ -74,7 +74,7 @@ function MorePage() {
                   className="flex w-full items-center justify-between gap-3 p-4 text-left transition-colors hover:bg-muted/60"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="grid h-9 w-9 place-items-center rounded-lg bg-primary/10 text-primary">
+                    <div className="grid h-9 w-9 place-items-center rounded-xl bg-primary/10 text-primary">
                       <it.icon className="h-[18px] w-[18px]" />
                     </div>
                     <span className="text-sm font-medium">{it.label}</span>

@@ -272,7 +272,7 @@ function CheckupsTab() {
       {items.map((it, i) => (
         <div key={it} className="surface-card flex items-center justify-between gap-3 p-4">
           <div className="flex items-center gap-3">
-            <div className="grid h-9 w-9 place-items-center rounded-lg bg-accent/40 text-accent-foreground">
+            <div className="grid h-9 w-9 place-items-center rounded-xl bg-accent/40 text-accent-foreground">
               {i + 1}
             </div>
             <div className="text-sm font-medium">{it}</div>

@@ -80,7 +80,7 @@ function CasesList({
                 <Mini icon={Pill} label="Препараты" value="2" />
                 <Mini icon={Users} label="Команда" value="2" />
               </div>
-              <button className="mt-4 flex w-full items-center justify-between rounded-lg bg-muted px-4 py-2.5 text-sm font-medium hover:bg-secondary">
+              <button className="mt-4 flex w-full items-center justify-between rounded-xl bg-muted px-4 py-2.5 text-sm font-medium hover:bg-secondary">
                 Открыть случай <ChevronRight className="h-4 w-4" />
               </button>
             </>
@@ -101,7 +101,7 @@ function Mini({
   value: string;
 }) {
   return (
-    <div className="rounded-lg bg-muted/60 p-3">
+    <div className="rounded-xl bg-muted/60 p-3">
       <Icon className="mx-auto h-4 w-4 text-primary" />
       <div className="mt-1 text-base font-semibold">{value}</div>
       <div className="text-[11px] text-muted-foreground">{label}</div>

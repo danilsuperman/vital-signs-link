@@ -21,7 +21,7 @@ export function PageNav() {
           <Link
             key={item.to}
             to={item.to}
-            className={`inline-flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+            className={`inline-flex shrink-0 items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
               active
                 ? "gradient-primary text-primary-foreground shadow-[var(--shadow-glow)]"
                 : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -57,7 +57,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <button
               type="button"
               aria-label="Уведомления"
-              className="relative grid h-9 w-9 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              className="relative grid h-9 w-9 place-items-center rounded-xl text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             >
               <Bell className="h-[18px] w-[18px]" />
               <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-critical ring-2 ring-background" />
@@ -65,14 +65,14 @@ export function AppShell({ children }: { children: ReactNode }) {
             <button
               type="button"
               aria-label="Профиль"
-              className="grid h-9 w-9 place-items-center rounded-lg bg-muted text-foreground transition-colors hover:bg-secondary"
+              className="grid h-9 w-9 place-items-center rounded-xl bg-muted text-foreground transition-colors hover:bg-secondary"
             >
               <UserRound className="h-[18px] w-[18px]" />
             </button>
             <button
               type="button"
               aria-label="Выход"
-              className="hidden h-9 w-9 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:grid"
+              className="hidden h-9 w-9 place-items-center rounded-xl text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:grid"
             >
               <LogOut className="h-[18px] w-[18px]" />
             </button>
