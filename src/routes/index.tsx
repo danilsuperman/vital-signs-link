@@ -105,9 +105,9 @@ const prescriptions = [
 function HomePage() {
   const profileProgress = 64;
   const [modal, setModal] = useState<ModalKey>(null);
-  const [symptoms, setSymptoms] = useState("");
   const [slide, setSlide] = useState(0);
   const [taken, setTaken] = useState<Record<number, boolean>>({});
+  const userCases = useCases();
   const close = () => setModal(null);
 
   return (
