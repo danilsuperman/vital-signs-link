@@ -206,6 +206,9 @@ function HomePage() {
                 }
               />
               <div className="space-y-3">
+                {userCases.map((c) => (
+                  <UserCaseCard key={c.id} c={c} />
+                ))}
                 {activeCases.map((c, i) => (
                   <CaseCard key={i} {...c} />
                 ))}
