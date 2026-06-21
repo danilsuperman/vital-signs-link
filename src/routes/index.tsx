@@ -109,6 +109,7 @@ const prescriptions = [
 function HomePage() {
   const profileProgress = 64;
   const [modal, setModal] = useState<ModalKey>(null);
+  const [share, setShare] = useState<{ scope: ShareScope; caseTitle?: string; context?: string } | null>(null);
   const [slide, setSlide] = useState(0);
   const [taken, setTaken] = useState<Record<number, boolean>>({});
   const userCases = useCases();
