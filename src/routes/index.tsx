@@ -745,7 +745,7 @@ function UrgencyBadge({ urgency }: { urgency: StoredCase["urgency"] }) {
   );
 }
 
-function UserCaseCard({ c }: { c: StoredCase }) {
+function UserCaseCard({ c, onShare }: { c: StoredCase; onShare?: () => void }) {
   return (
     <div className="surface-card p-4">
       <div className="flex items-start justify-between gap-3">
@@ -760,7 +760,19 @@ function UserCaseCard({ c }: { c: StoredCase }) {
             </div>
           </div>
         </div>
-        <UrgencyBadge urgency={c.urgency} />
+        <div className="flex items-center gap-2">
+          <UrgencyBadge urgency={c.urgency} />
+          {onShare && (
+            <button
+              type="button"
+              onClick={onShare}
+              title="Поделиться кейсом"
+              className="grid h-8 w-8 place-items-center rounded-xl border border-border bg-card text-foreground hover:bg-muted"
+            >
+              <Share2 className="h-4 w-4" />
+            </button>
+          )}
+        </div>
       </div>
       <p className="mt-3 text-xs leading-relaxed text-foreground/80">{c.summary}</p>
 
