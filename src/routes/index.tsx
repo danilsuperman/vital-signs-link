@@ -128,7 +128,16 @@ function HomePage() {
               Доброе утро, Алексей
             </h1>
           </div>
-          <StatusBadge tone="success">Всё под контролем</StatusBadge>
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => setShare({ scope: "full", context: "Вся медкарта" })}
+              className="inline-flex items-center gap-1.5 rounded-xl gradient-primary px-3 py-2 text-xs font-semibold text-primary-foreground shadow-[var(--shadow-glow)]"
+            >
+              <Share2 className="h-4 w-4" /> Поделиться медкартой
+            </button>
+            <StatusBadge tone="success">Всё под контролем</StatusBadge>
+          </div>
         </div>
 
         {/* Медкарта */}
