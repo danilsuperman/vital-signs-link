@@ -221,10 +221,18 @@ function HomePage() {
               />
               <div className="space-y-3">
                 {userCases.map((c) => (
-                  <UserCaseCard key={c.id} c={c} />
+                  <UserCaseCard
+                    key={c.id}
+                    c={c}
+                    onShare={() => setShare({ scope: "case", caseTitle: c.title, context: c.title })}
+                  />
                 ))}
                 {activeCases.map((c, i) => (
-                  <CaseCard key={i} {...c} />
+                  <CaseCard
+                    key={i}
+                    {...c}
+                    onShare={() => setShare({ scope: "case", caseTitle: c.title, context: `${c.title} ${c.number}` })}
+                  />
                 ))}
               </div>
             </section>
