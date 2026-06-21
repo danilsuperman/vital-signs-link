@@ -32,6 +32,9 @@ const cases = {
 };
 
 function TreatmentPage() {
+  const [share, setShare] = useState<{ scope: ShareScope; caseTitle?: string; context?: string } | null>(null);
+  const onShare = (name: string) => setShare({ scope: "case", caseTitle: name, context: name });
+
   return (
     <AppShell>
       <header className="mb-5">
@@ -42,10 +45,18 @@ function TreatmentPage() {
 
       <Tabs
         tabs={[
-          { id: "active", label: "Активные", content: <CasesList items={cases.active} detailed /> },
-          { id: "done", label: "Завершённые", content: <CasesList items={cases.done} /> },
-          { id: "archive", label: "Архив", content: <CasesList items={cases.archive} /> },
+          { id: "active", label: "Активные", content: <CasesList items={cases.active} detailed onShare={onShare} /> },
+          { id: "done", label: "Завершённые", content: <CasesList items={cases.done} onShare={onShare} /> },
+          { id: "archive", label: "Архив", content: <CasesList items={cases.archive} onShare={onShare} /> },
         ]}
+      />
+
+      <ShareDialog
+        open={share !== null}
+        onOpenChange={(o) => !o && setShare(null)}
+        initialScope={share?.scope ?? "case"}
+        caseTitle={share?.caseTitle}
+        context={share?.context}
       />
     </AppShell>
   );
