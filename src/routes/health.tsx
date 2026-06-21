@@ -32,14 +32,34 @@ export const Route = createFileRoute("/health")({
 });
 
 function HealthPage() {
+  const [share, setShare] = useState<{ scope: ShareScope; context?: string } | null>(null);
+
   return (
     <AppShell>
-      <header className="mb-5">
-        <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Раздел</p>
-        <h1 className="mt-1 text-2xl font-bold tracking-tight md:text-3xl">Здоровье</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Что известно про ваш организм на сегодняшний день
-        </p>
+      <header className="mb-5 flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Раздел</p>
+          <h1 className="mt-1 text-2xl font-bold tracking-tight md:text-3xl">Здоровье</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Что известно про ваш организм на сегодняшний день
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setShare({ scope: "labs", context: "Анализы и обследования" })}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-3 py-2 text-xs font-semibold text-foreground hover:bg-muted"
+          >
+            <Share2 className="h-4 w-4" /> Поделиться анализами
+          </button>
+          <button
+            type="button"
+            onClick={() => setShare({ scope: "full", context: "Вся медкарта" })}
+            className="inline-flex items-center gap-1.5 rounded-xl gradient-primary px-3 py-2 text-xs font-semibold text-primary-foreground shadow-[var(--shadow-glow)]"
+          >
+            <Share2 className="h-4 w-4" /> Поделиться медкартой
+          </button>
+        </div>
       </header>
 
       <Tabs
@@ -52,6 +72,13 @@ function HealthPage() {
           { id: "checkups", label: "Чекапы", content: <CheckupsTab /> },
           { id: "changes", label: "Изменения", content: <ChangesTab /> },
         ]}
+      />
+
+      <ShareDialog
+        open={share !== null}
+        onOpenChange={(o) => !o && setShare(null)}
+        initialScope={share?.scope ?? "full"}
+        context={share?.context}
       />
     </AppShell>
   );
