@@ -1,8 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ChevronRight, FileText, Pill, Stethoscope, Users } from "lucide-react";
+import { useState } from "react";
+import { ChevronRight, FileText, Pill, Share2, Stethoscope, Users } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { SectionTitle, StatusBadge } from "@/components/ui/status";
 import { Tabs } from "@/components/ui/section-tabs";
+import { ShareDialog } from "@/components/share-dialog";
+import type { ShareScope } from "@/lib/share-links-store";
 
 export const Route = createFileRoute("/treatment")({
   head: () => ({
