@@ -678,12 +678,14 @@ function CaseCard({
   diagnosis,
   specialist,
   next,
+  onShare,
 }: {
   title: string;
   number: string;
   diagnosis: string;
   specialist: string;
   next: string;
+  onShare?: () => void;
 }) {
   return (
     <div className="surface-card p-4">
@@ -694,8 +696,20 @@ function CaseCard({
           </div>
           <div className="text-base font-semibold text-foreground">{title}</div>
         </div>
-        <div className="h-1.5 w-20 overflow-hidden rounded-full bg-muted">
-          <div className="h-full w-2/3 rounded-full gradient-primary" />
+        <div className="flex items-center gap-2">
+          <div className="h-1.5 w-20 overflow-hidden rounded-full bg-muted">
+            <div className="h-full w-2/3 rounded-full gradient-primary" />
+          </div>
+          {onShare && (
+            <button
+              type="button"
+              onClick={onShare}
+              title="Поделиться кейсом"
+              className="grid h-8 w-8 place-items-center rounded-xl border border-border bg-card text-foreground hover:bg-muted"
+            >
+              <Share2 className="h-4 w-4" />
+            </button>
+          )}
         </div>
       </div>
       <dl className="mt-3 grid grid-cols-[140px_1fr] gap-x-3 gap-y-1.5 text-xs">
