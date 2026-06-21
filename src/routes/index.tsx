@@ -482,6 +482,15 @@ function HomePage() {
       {/* === Что случилось? — чат с ИИ-врачом === */}
       <IncidentChatDialog open={modal === "incident"} onOpenChange={(o) => !o && close()} />
 
+      {/* === Share === */}
+      <ShareDialog
+        open={share !== null}
+        onOpenChange={(o) => !o && setShare(null)}
+        initialScope={share?.scope ?? "full"}
+        caseTitle={share?.caseTitle}
+        context={share?.context}
+      />
+
 
       {/* === Нужен врач === */}
       <Dialog open={modal === "doctor"} onOpenChange={(o) => !o && close()}>
