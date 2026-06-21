@@ -26,6 +26,7 @@ import {
   FlaskRound,
   Users,
 } from "lucide-react";
+import { Share2 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { SectionTitle, StatusBadge } from "@/components/ui/status";
 import {
@@ -38,7 +39,9 @@ import {
 import { toast } from "sonner";
 import doctorPhoto from "@/assets/doctor-petrov.jpg";
 import { IncidentChatDialog } from "@/components/incident-chat-dialog";
+import { ShareDialog } from "@/components/share-dialog";
 import { useCases, type StoredCase } from "@/lib/cases-store";
+import type { ShareScope } from "@/lib/share-links-store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -106,6 +109,7 @@ const prescriptions = [
 function HomePage() {
   const profileProgress = 64;
   const [modal, setModal] = useState<ModalKey>(null);
+  const [share, setShare] = useState<{ scope: ShareScope; caseTitle?: string; context?: string } | null>(null);
   const [slide, setSlide] = useState(0);
   const [taken, setTaken] = useState<Record<number, boolean>>({});
   const userCases = useCases();
@@ -124,7 +128,16 @@ function HomePage() {
               Доброе утро, Алексей
             </h1>
           </div>
-          <StatusBadge tone="success">Всё под контролем</StatusBadge>
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => setShare({ scope: "full", context: "Вся медкарта" })}
+              className="inline-flex items-center gap-1.5 rounded-xl gradient-primary px-3 py-2 text-xs font-semibold text-primary-foreground shadow-[var(--shadow-glow)]"
+            >
+              <Share2 className="h-4 w-4" /> Поделиться медкартой
+            </button>
+            <StatusBadge tone="success">Всё под контролем</StatusBadge>
+          </div>
         </div>
 
         {/* Медкарта */}
@@ -208,10 +221,18 @@ function HomePage() {
               />
               <div className="space-y-3">
                 {userCases.map((c) => (
-                  <UserCaseCard key={c.id} c={c} />
+                  <UserCaseCard
+                    key={c.id}
+                    c={c}
+                    onShare={() => setShare({ scope: "case", caseTitle: c.title, context: c.title })}
+                  />
                 ))}
                 {activeCases.map((c, i) => (
-                  <CaseCard key={i} {...c} />
+                  <CaseCard
+                    key={i}
+                    {...c}
+                    onShare={() => setShare({ scope: "case", caseTitle: c.title, context: `${c.title} ${c.number}` })}
+                  />
                 ))}
               </div>
             </section>
@@ -461,6 +482,15 @@ function HomePage() {
       {/* === Что случилось? — чат с ИИ-врачом === */}
       <IncidentChatDialog open={modal === "incident"} onOpenChange={(o) => !o && close()} />
 
+      {/* === Share === */}
+      <ShareDialog
+        open={share !== null}
+        onOpenChange={(o) => !o && setShare(null)}
+        initialScope={share?.scope ?? "full"}
+        caseTitle={share?.caseTitle}
+        context={share?.context}
+      />
+
 
       {/* === Нужен врач === */}
       <Dialog open={modal === "doctor"} onOpenChange={(o) => !o && close()}>
@@ -657,12 +687,14 @@ function CaseCard({
   diagnosis,
   specialist,
   next,
+  onShare,
 }: {
   title: string;
   number: string;
   diagnosis: string;
   specialist: string;
   next: string;
+  onShare?: () => void;
 }) {
   return (
     <div className="surface-card p-4">
@@ -673,8 +705,20 @@ function CaseCard({
           </div>
           <div className="text-base font-semibold text-foreground">{title}</div>
         </div>
-        <div className="h-1.5 w-20 overflow-hidden rounded-full bg-muted">
-          <div className="h-full w-2/3 rounded-full gradient-primary" />
+        <div className="flex items-center gap-2">
+          <div className="h-1.5 w-20 overflow-hidden rounded-full bg-muted">
+            <div className="h-full w-2/3 rounded-full gradient-primary" />
+          </div>
+          {onShare && (
+            <button
+              type="button"
+              onClick={onShare}
+              title="Поделиться кейсом"
+              className="grid h-8 w-8 place-items-center rounded-xl border border-border bg-card text-foreground hover:bg-muted"
+            >
+              <Share2 className="h-4 w-4" />
+            </button>
+          )}
         </div>
       </div>
       <dl className="mt-3 grid grid-cols-[140px_1fr] gap-x-3 gap-y-1.5 text-xs">
@@ -710,7 +754,7 @@ function UrgencyBadge({ urgency }: { urgency: StoredCase["urgency"] }) {
   );
 }
 
-function UserCaseCard({ c }: { c: StoredCase }) {
+function UserCaseCard({ c, onShare }: { c: StoredCase; onShare?: () => void }) {
   return (
     <div className="surface-card p-4">
       <div className="flex items-start justify-between gap-3">
@@ -725,7 +769,19 @@ function UserCaseCard({ c }: { c: StoredCase }) {
             </div>
           </div>
         </div>
-        <UrgencyBadge urgency={c.urgency} />
+        <div className="flex items-center gap-2">
+          <UrgencyBadge urgency={c.urgency} />
+          {onShare && (
+            <button
+              type="button"
+              onClick={onShare}
+              title="Поделиться кейсом"
+              className="grid h-8 w-8 place-items-center rounded-xl border border-border bg-card text-foreground hover:bg-muted"
+            >
+              <Share2 className="h-4 w-4" />
+            </button>
+          )}
+        </div>
       </div>
       <p className="mt-3 text-xs leading-relaxed text-foreground/80">{c.summary}</p>
 
