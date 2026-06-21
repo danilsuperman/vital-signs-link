@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import {
   Activity,
   AlertCircle,
@@ -7,6 +8,7 @@ import {
   ChevronRight,
   Droplets,
   HeartPulse,
+  Share2,
   Shield,
   Sparkles,
   TrendingDown,
@@ -16,6 +18,8 @@ import {
 import { AppShell } from "@/components/app-shell";
 import { SectionTitle, StatusBadge } from "@/components/ui/status";
 import { Tabs } from "@/components/ui/section-tabs";
+import { ShareDialog } from "@/components/share-dialog";
+import type { ShareScope } from "@/lib/share-links-store";
 
 export const Route = createFileRoute("/health")({
   head: () => ({
