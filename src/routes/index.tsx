@@ -26,6 +26,7 @@ import {
   FlaskRound,
   Users,
 } from "lucide-react";
+import { Share2 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { SectionTitle, StatusBadge } from "@/components/ui/status";
 import {
@@ -38,7 +39,9 @@ import {
 import { toast } from "sonner";
 import doctorPhoto from "@/assets/doctor-petrov.jpg";
 import { IncidentChatDialog } from "@/components/incident-chat-dialog";
+import { ShareDialog } from "@/components/share-dialog";
 import { useCases, type StoredCase } from "@/lib/cases-store";
+import type { ShareScope } from "@/lib/share-links-store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
