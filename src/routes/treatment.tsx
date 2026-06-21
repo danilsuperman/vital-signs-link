@@ -65,9 +65,11 @@ function TreatmentPage() {
 function CasesList({
   items,
   detailed,
+  onShare,
 }: {
   items: { name: string; doctor: string; tone: "primary" | "warning" | "accent" | "success" | "default"; status: string }[];
   detailed?: boolean;
+  onShare?: (name: string) => void;
 }) {
   if (items.length === 0) return <p className="text-sm text-muted-foreground">Нет записей.</p>;
   return (
@@ -84,7 +86,19 @@ function CasesList({
                 <div className="text-xs text-muted-foreground">{c.doctor}</div>
               </div>
             </div>
-            <StatusBadge tone={c.tone}>{c.status}</StatusBadge>
+            <div className="flex items-center gap-2">
+              <StatusBadge tone={c.tone}>{c.status}</StatusBadge>
+              {onShare && (
+                <button
+                  type="button"
+                  onClick={() => onShare(c.name)}
+                  title="Поделиться кейсом"
+                  className="grid h-8 w-8 place-items-center rounded-xl border border-border bg-card text-foreground hover:bg-muted"
+                >
+                  <Share2 className="h-4 w-4" />
+                </button>
+              )}
+            </div>
           </div>
 
           {detailed && (
@@ -94,9 +108,20 @@ function CasesList({
                 <Mini icon={Pill} label="Препараты" value="2" />
                 <Mini icon={Users} label="Команда" value="2" />
               </div>
-              <button className="mt-4 flex w-full items-center justify-between rounded-xl bg-muted px-4 py-2.5 text-sm font-medium hover:bg-secondary">
-                Открыть случай <ChevronRight className="h-4 w-4" />
-              </button>
+              <div className="mt-4 grid gap-2 sm:grid-cols-[1fr_auto]">
+                <button className="flex w-full items-center justify-between rounded-xl bg-muted px-4 py-2.5 text-sm font-medium hover:bg-secondary">
+                  Открыть случай <ChevronRight className="h-4 w-4" />
+                </button>
+                {onShare && (
+                  <button
+                    type="button"
+                    onClick={() => onShare(c.name)}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-xl gradient-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)]"
+                  >
+                    <Share2 className="h-4 w-4" /> Поделиться кейсом
+                  </button>
+                )}
+              </div>
             </>
           )}
         </article>
