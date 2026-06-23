@@ -1,9 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
 import {
   Activity,
   AlertCircle,
   AlertTriangle,
+  BookOpen,
   Brain,
   Calendar,
   CheckCircle2,
@@ -13,18 +14,29 @@ import {
   Eye,
   FileText,
   HeartPulse,
+  Microscope,
   Plus,
   Share2,
   Shield,
   Sparkles,
   Stethoscope,
+  Target,
   TrendingDown,
   TrendingUp,
   User,
   Wind,
-  Wrench,
   Bone,
 } from "lucide-react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+  ReferenceArea,
+} from "recharts";
 import { AppShell } from "@/components/app-shell";
 import { SectionTitle, StatusBadge } from "@/components/ui/status";
 import { Tabs } from "@/components/ui/section-tabs";
