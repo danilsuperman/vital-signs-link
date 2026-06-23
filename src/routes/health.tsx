@@ -480,75 +480,183 @@ function SymptomRow({ text, since }: { text: string; since: string }) {
   );
 }
 
-/* ───────── Стратегия ───────── */
+/* ───────── Стратегия (профессиональная) ───────── */
 
-const CONDITIONS = [
+type ProCondition = {
+  name: string;
+  icd: string;
+  severity: "mild" | "moderate" | "severe";
+  evidence: "high" | "moderate" | "low";
+  known: string;
+  diagnosis: { method: string; result: string }[];
+  markers: { name: string; value: string; target: string; tone: "success" | "warning" | "critical" }[];
+  current: { kind: "Препарат" | "Терапия" | "Образ жизни"; text: string }[];
+  plan: { what: string; when: string; urgency: "now" | "soon" | "plan" }[];
+  goals: { metric: string; target: string; horizon: string }[];
+  guidelines: { name: string; ref: string }[];
+  forecast: string;
+};
+
+const PRO_CONDITIONS: ProCondition[] = [
   {
-    name: "Варикоз",
-    known: "Диагноз подтвержден УЗИ вен.",
-    basis: ["УЗИ вен", "Заключение флеболога", "Симптомы пользователя"],
-    now: ["Наблюдение", "Компрессионная терапия"],
-    todo: ["Контрольное УЗИ", "Повторная консультация"],
-    forecast: "Без лечения заболевание может прогрессировать.",
+    name: "Варикозная болезнь нижних конечностей",
+    icd: "I83.9",
+    severity: "moderate",
+    evidence: "high",
+    known: "Диагноз подтверждён дуплексным сканированием вен (CEAP C2).",
+    diagnosis: [
+      { method: "УЗДС вен н/к", result: "Несостоятельность БПВ справа, рефлюкс 1.4 с" },
+      { method: "Осмотр флеболога", result: "CEAP C2, EP, AS, PR" },
+    ],
+    markers: [
+      { name: "Окружность голени (Δ)", value: "+1.2 см", target: "<0.5 см", tone: "warning" },
+      { name: "D-димер", value: "0.3 мкг/мл", target: "<0.5", tone: "success" },
+    ],
+    current: [
+      { kind: "Терапия", text: "Компрессионный трикотаж 2 класс, ежедневно" },
+      { kind: "Препарат", text: "Диосмин 600 мг × 1 раз/сут, 2 мес" },
+      { kind: "Образ жизни", text: "Динамические упражнения, контроль массы тела" },
+    ],
+    plan: [
+      { what: "Контрольное УЗДС вен", when: "через 3 мес", urgency: "soon" },
+      { what: "Повторная консультация флеболога", when: "через 3 мес", urgency: "soon" },
+      { what: "Рассмотреть ЭВЛК при прогрессии", when: "по показаниям", urgency: "plan" },
+    ],
+    goals: [
+      { metric: "Прогрессия CEAP", target: "Без перехода в C3+", horizon: "12 мес" },
+      { metric: "Симптомы (VCSS)", target: "≤ 4 балла", horizon: "6 мес" },
+    ],
+    guidelines: [
+      { name: "Клин. рекомендации МЗ РФ «Варикозная болезнь»", ref: "2021" },
+      { name: "ESVS Guidelines", ref: "2022" },
+    ],
+    forecast: "При соблюдении плана и компрессии — стабилизация. Без терапии — риск прогрессии до C3–C4 в течение 2–3 лет.",
   },
   {
-    name: "Артериальная гипертензия",
-    known: "Зафиксированы устойчивые эпизоды повышенного АД.",
-    basis: ["Серия измерений", "Консультация терапевта"],
-    now: ["Контроль АД", "Изменение образа жизни"],
-    todo: ["Консультация кардиолога", "Биохимия", "ЭКГ"],
-    forecast: "Требуется регулярный контроль давления.",
+    name: "Артериальная гипертензия I стадии",
+    icd: "I10",
+    severity: "mild",
+    evidence: "high",
+    known: "Устойчивое повышение АД >130/85 при серии измерений (3 визита, СМАД).",
+    diagnosis: [
+      { method: "СМАД", result: "Среднесуточное АД 142/88, ночное снижение недостаточное" },
+      { method: "ЭКГ", result: "Ритм синусовый, ЧСС 72, без признаков ГЛЖ" },
+    ],
+    markers: [
+      { name: "АД (среднее)", value: "138/88", target: "<130/80", tone: "warning" },
+      { name: "ЛПНП", value: "4.9 ммоль/л", target: "<3.0", tone: "critical" },
+      { name: "Глюкоза натощак", value: "5.4 ммоль/л", target: "<6.1", tone: "success" },
+      { name: "SCORE2 (10-летний риск)", value: "4%", target: "<5%", tone: "success" },
+    ],
+    current: [
+      { kind: "Образ жизни", text: "DASH-диета, ограничение соли <5 г/сут" },
+      { kind: "Терапия", text: "Аэробная нагрузка 150 мин/нед" },
+    ],
+    plan: [
+      { what: "Консультация кардиолога", when: "в течение 2 недель", urgency: "now" },
+      { what: "Липидограмма расширенная, креатинин, калий", when: "в течение месяца", urgency: "soon" },
+      { what: "Холтер-ЭКГ 24 ч", when: "при сердцебиении", urgency: "plan" },
+      { what: "Рассмотреть стартовую терапию (иАПФ/БРА)", when: "по решению кардиолога", urgency: "soon" },
+    ],
+    goals: [
+      { metric: "Среднее АД", target: "<130/80", horizon: "3 мес" },
+      { metric: "ЛПНП", target: "<3.0 ммоль/л", horizon: "6 мес" },
+    ],
+    guidelines: [
+      { name: "ESC/ESH Guidelines for Hypertension", ref: "2024" },
+      { name: "Клин. рекомендации МЗ РФ «Артериальная гипертензия»", ref: "2024" },
+    ],
+    forecast: "При коррекции образа жизни и достижении целевого АД — низкий 10-летний кардиоваскулярный риск.",
   },
   {
-    name: "Дефицит железа",
-    known: "Ферритин ниже нормы.",
-    basis: ["Ферритин 18 нг/мл"],
-    now: ["Курс препаратов железа"],
-    todo: ["Повтор ферритина", "ОЖСС"],
-    forecast: "При коррекции прогноз благоприятный.",
+    name: "Латентный дефицит железа",
+    icd: "E61.1",
+    severity: "mild",
+    evidence: "high",
+    known: "Снижение ферритина без анемии. На фоне терапии — положительная динамика.",
+    diagnosis: [
+      { method: "Ферритин", result: "32 нг/мл (исходно 18)" },
+      { method: "ОАК", result: "Hb 138 г/л, MCV 86 фл" },
+    ],
+    markers: [
+      { name: "Ферритин", value: "32 нг/мл", target: ">50", tone: "warning" },
+      { name: "Гемоглобин", value: "138 г/л", target: "130–170", tone: "success" },
+      { name: "Трансферрин", value: "—", target: "2.0–3.6", tone: "warning" },
+    ],
+    current: [
+      { kind: "Препарат", text: "Железа сульфат 100 мг × 1 раз/сут + витамин C 200 мг" },
+      { kind: "Образ жизни", text: "Увеличение красного мяса, бобовых; разнесение с кофе/чаем" },
+    ],
+    plan: [
+      { what: "Повторить ферритин + ОЖСС", when: "через 2 недели", urgency: "now" },
+      { what: "Курс препаратов железа", when: "не менее 3 мес после нормализации", urgency: "soon" },
+    ],
+    goals: [{ metric: "Ферритин", target: ">50 нг/мл", horizon: "2 мес" }],
+    guidelines: [
+      { name: "WHO Iron Deficiency Guideline", ref: "2023" },
+      { name: "BSH Guidelines on iron deficiency", ref: "2021" },
+    ],
+    forecast: "При полном курсе терапии — восстановление запасов железа без рецидива в течение 12 мес.",
   },
 ];
 
 function StrategyTab() {
   return (
     <div className="space-y-5">
-      <section>
-        <SectionTitle title="Что обнаружено" hint="Список ваших состояний" />
-        <div className="space-y-3">
-          {CONDITIONS.map((c) => <ConditionCard key={c.name} c={c} />)}
-        </div>
-      </section>
-
-      <section>
-        <SectionTitle title="Персональные решения" hint="Что делать дальше" />
-        <div className="space-y-3">
-          <ActionGroup tone="critical" title="Срочно" items={["Повторить ферритин"]} />
-          <ActionGroup tone="warning" title="В течение месяца" items={["Пройти УЗИ вен"]} />
-          <ActionGroup tone="primary" title="26.07.2026" items={["Ежегодный чекап"]} />
-        </div>
-      </section>
-
-      <section>
-        <SectionTitle title="Напоминания" />
-        <div className="grid gap-3 sm:grid-cols-3">
-          {["Контроль давления", "Повторный анализ", "Приём препарата"].map((t) => (
-            <div key={t} className="surface-card flex items-center gap-3 p-4">
-              <div className="grid h-9 w-9 place-items-center rounded-xl bg-primary/10 text-primary">
-                <Clock className="h-4 w-4" />
-              </div>
-              <div className="text-sm font-medium">{t}</div>
+      <section className="surface-card overflow-hidden">
+        <div className="relative p-5">
+          <div className="absolute inset-0 gradient-primary opacity-[0.06]" aria-hidden />
+          <div className="relative flex items-start gap-4">
+            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
+              <Target className="h-5 w-5" />
             </div>
-          ))}
+            <div className="flex-1">
+              <SectionTitle
+                title="Клиническая стратегия"
+                hint="Состояния, диагностика, цели терапии и протоколы по клин. рекомендациям"
+              />
+              <div className="mt-2 grid grid-cols-3 gap-2 text-center">
+                <div className="rounded-xl bg-card p-2.5">
+                  <div className="text-xl font-bold text-foreground">{PRO_CONDITIONS.length}</div>
+                  <div className="text-[11px] text-muted-foreground">Активных диагнозов</div>
+                </div>
+                <div className="rounded-xl bg-card p-2.5">
+                  <div className="text-xl font-bold text-warning-foreground">
+                    {PRO_CONDITIONS.flatMap((c) => c.plan).filter((p) => p.urgency === "now").length}
+                  </div>
+                  <div className="text-[11px] text-muted-foreground">Срочных задач</div>
+                </div>
+                <div className="rounded-xl bg-card p-2.5">
+                  <div className="text-xl font-bold text-success">{PRO_CONDITIONS.flatMap((c) => c.goals).length}</div>
+                  <div className="text-[11px] text-muted-foreground">Целевых показателей</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
       <section>
-        <SectionTitle title="Рекомендуемые обследования" hint="На основании возраста, пола, заболеваний и семейного анамнеза" />
+        <SectionTitle title="Состояния и протоколы" />
+        <div className="space-y-3">
+          {PRO_CONDITIONS.map((c) => <ProConditionCard key={c.name} c={c} />)}
+        </div>
+      </section>
+
+      <section>
+        <SectionTitle title="Рекомендуемые обследования" hint="На основании возраста, пола, диагнозов и семейного анамнеза" />
         <div className="grid gap-2 sm:grid-cols-2">
-          {["Липидограмма", "ЭКГ", "УЗИ щитовидной", "Витамин D", "Биохимия", "Глюкоза натощак"].map((t) => (
+          {[
+            "Липидограмма расширенная",
+            "ЭКГ + Холтер 24ч",
+            "УЗИ щитовидной + ТТГ/Т4",
+            "Витамин D (25-OH)",
+            "Биохимия (АЛТ, АСТ, креатинин, глюкоза)",
+            "HbA1c",
+          ].map((t) => (
             <div key={t} className="surface-card flex items-center justify-between gap-3 p-3">
               <div className="flex items-center gap-3">
-                <Stethoscope className="h-4 w-4 text-primary" />
+                <Microscope className="h-4 w-4 text-primary" />
                 <div className="text-sm">{t}</div>
               </div>
               <button className="text-xs font-semibold text-primary hover:underline">Записаться</button>
@@ -556,74 +664,538 @@ function StrategyTab() {
           ))}
         </div>
       </section>
+
+      <section>
+        <SectionTitle title="Напоминания по контролю" />
+        <div className="grid gap-3 sm:grid-cols-3">
+          {[
+            { name: "Контроль АД", when: "ежедневно утром и вечером" },
+            { name: "Повторный ферритин", when: "через 2 недели" },
+            { name: "Приём железа", when: "ежедневно × 3 мес" },
+          ].map((r) => (
+            <div key={r.name} className="surface-card flex items-center gap-3 p-4">
+              <div className="grid h-9 w-9 place-items-center rounded-xl bg-primary/10 text-primary">
+                <Clock className="h-4 w-4" />
+              </div>
+              <div>
+                <div className="text-sm font-semibold">{r.name}</div>
+                <div className="text-[11px] text-muted-foreground">{r.when}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
 
-function ConditionCard({ c }: { c: typeof CONDITIONS[number] }) {
+function ProConditionCard({ c }: { c: ProCondition }) {
+  const sevMap = {
+    mild: { label: "Лёгкая", tone: "success" as const },
+    moderate: { label: "Средняя", tone: "warning" as const },
+    severe: { label: "Тяжёлая", tone: "critical" as const },
+  };
+  const evMap = {
+    high: "Высокий",
+    moderate: "Средний",
+    low: "Низкий",
+  };
   return (
     <article className="surface-card p-5">
-      <div className="flex items-start justify-between gap-3">
+      <header className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <div className="text-base font-semibold">{c.name}</div>
-          <div className="mt-1 text-sm text-muted-foreground">{c.known}</div>
+          <div className="flex items-center gap-2">
+            <h3 className="text-base font-semibold">{c.name}</h3>
+            <span className="rounded-md bg-muted px-2 py-0.5 text-[11px] font-mono font-semibold text-muted-foreground">
+              МКБ-10: {c.icd}
+            </span>
+          </div>
+          <p className="mt-1 text-sm text-muted-foreground">{c.known}</p>
         </div>
-        <StatusBadge tone="primary">Состояние</StatusBadge>
-      </div>
+        <div className="flex flex-wrap gap-1.5">
+          <StatusBadge tone={sevMap[c.severity].tone}>Степень: {sevMap[c.severity].label}</StatusBadge>
+          <StatusBadge tone="primary">Доказательность: {evMap[c.evidence]}</StatusBadge>
+        </div>
+      </header>
+
       <div className="mt-4 grid gap-4 md:grid-cols-2">
-        <Block title="На чём основан вывод" items={c.basis} />
-        <Block title="Что делается сейчас" items={c.now} />
-        <Block title="Что нужно сделать" items={c.todo} />
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Диагностика</div>
+          <ul className="mt-1.5 space-y-1.5 text-sm">
+            {c.diagnosis.map((d) => (
+              <li key={d.method} className="rounded-lg bg-muted/40 p-2">
+                <div className="text-[11px] font-semibold text-muted-foreground">{d.method}</div>
+                <div className="text-foreground/90">{d.result}</div>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Маркеры</div>
+          <ul className="mt-1.5 space-y-1.5 text-sm">
+            {c.markers.map((m) => (
+              <li key={m.name} className="flex items-center justify-between gap-2 rounded-lg bg-muted/40 p-2">
+                <span className="text-foreground/90">{m.name}</span>
+                <span className="flex items-center gap-2">
+                  <span
+                    className={`font-semibold ${
+                      m.tone === "critical"
+                        ? "text-critical"
+                        : m.tone === "warning"
+                          ? "text-warning-foreground"
+                          : "text-success"
+                    }`}
+                  >
+                    {m.value}
+                  </span>
+                  <span className="text-[11px] text-muted-foreground">цель {m.target}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Текущая терапия</div>
+          <ul className="mt-1.5 space-y-1 text-sm">
+            {c.current.map((t) => (
+              <li key={t.text} className="flex items-start gap-2">
+                <span className="mt-0.5 rounded-md bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold text-primary">
+                  {t.kind}
+                </span>
+                <span className="text-foreground/90">{t.text}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">План действий</div>
+          <ul className="mt-1.5 space-y-1.5 text-sm">
+            {c.plan.map((p) => (
+              <li key={p.what} className="flex items-start gap-2">
+                <CheckCircle2
+                  className={`mt-0.5 h-4 w-4 shrink-0 ${
+                    p.urgency === "now"
+                      ? "text-critical"
+                      : p.urgency === "soon"
+                        ? "text-warning-foreground"
+                        : "text-primary"
+                  }`}
+                />
+                <div>
+                  <div className="text-foreground/90">{p.what}</div>
+                  <div className="text-[11px] text-muted-foreground">{p.when}</div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <div className="mt-4 rounded-xl bg-muted/40 p-3">
+        <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Целевые показатели</div>
+        <div className="mt-1.5 grid gap-2 sm:grid-cols-2">
+          {c.goals.map((g) => (
+            <div key={g.metric} className="flex items-center justify-between rounded-lg bg-card p-2 text-sm">
+              <span className="text-foreground/90">{g.metric}</span>
+              <span className="text-right">
+                <div className="font-semibold text-primary">{g.target}</div>
+                <div className="text-[11px] text-muted-foreground">{g.horizon}</div>
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-4 grid gap-3 md:grid-cols-2">
         <div>
           <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Прогноз</div>
-          <p className="mt-1.5 text-sm text-foreground/85">{c.forecast}</p>
+          <p className="mt-1 text-sm text-foreground/85">{c.forecast}</p>
+        </div>
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Клинические рекомендации</div>
+          <ul className="mt-1 space-y-0.5 text-sm">
+            {c.guidelines.map((g) => (
+              <li key={g.name} className="flex items-center gap-1.5 text-foreground/85">
+                <BookOpen className="h-3.5 w-3.5 text-primary" />
+                <span>{g.name}</span>
+                <span className="text-[11px] text-muted-foreground">· {g.ref}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </article>
   );
 }
 
-function Block({ title, items }: { title: string; items: string[] }) {
-  return (
-    <div>
-      <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{title}</div>
-      <ul className="mt-1.5 space-y-1 text-sm text-foreground/85">
-        {items.map((i) => <li key={i}>• {i}</li>)}
-      </ul>
-    </div>
-  );
-}
-
 /* ───────── Динамика ───────── */
 
+type MetricSeries = {
+  id: string;
+  name: string;
+  unit: string;
+  system: string;
+  tone: "success" | "warning" | "critical" | "primary";
+  ref: [number, number];
+  points: { date: string; value: number }[];
+};
+
+const METRIC_SERIES: MetricSeries[] = [
+  {
+    id: "ferritin",
+    name: "Ферритин",
+    unit: "нг/мл",
+    system: "Кроветворение",
+    tone: "success",
+    ref: [30, 200],
+    points: [
+      { date: "Янв", value: 14 },
+      { date: "Фев", value: 18 },
+      { date: "Мар", value: 22 },
+      { date: "Апр", value: 26 },
+      { date: "Май", value: 30 },
+      { date: "Июн", value: 32 },
+    ],
+  },
+  {
+    id: "ldl",
+    name: "ЛПНП",
+    unit: "ммоль/л",
+    system: "Сердце и сосуды",
+    tone: "warning",
+    ref: [0, 3],
+    points: [
+      { date: "Янв", value: 3.6 },
+      { date: "Фев", value: 3.8 },
+      { date: "Мар", value: 4.1 },
+      { date: "Апр", value: 4.4 },
+      { date: "Май", value: 4.7 },
+      { date: "Июн", value: 4.9 },
+    ],
+  },
+  {
+    id: "weight",
+    name: "Вес",
+    unit: "кг",
+    system: "Метаболизм",
+    tone: "primary",
+    ref: [70, 85],
+    points: [
+      { date: "Янв", value: 95 },
+      { date: "Фев", value: 93 },
+      { date: "Мар", value: 92 },
+      { date: "Апр", value: 91 },
+      { date: "Май", value: 90 },
+      { date: "Июн", value: 89 },
+    ],
+  },
+  {
+    id: "sbp",
+    name: "АД систолическое",
+    unit: "мм рт. ст.",
+    system: "Сердце и сосуды",
+    tone: "success",
+    ref: [110, 130],
+    points: [
+      { date: "Янв", value: 152 },
+      { date: "Фев", value: 148 },
+      { date: "Мар", value: 145 },
+      { date: "Апр", value: 142 },
+      { date: "Май", value: 140 },
+      { date: "Июн", value: 138 },
+    ],
+  },
+  {
+    id: "glucose",
+    name: "Глюкоза натощак",
+    unit: "ммоль/л",
+    system: "Метаболизм",
+    tone: "success",
+    ref: [3.9, 6.1],
+    points: [
+      { date: "Янв", value: 5.6 },
+      { date: "Фев", value: 5.5 },
+      { date: "Мар", value: 5.5 },
+      { date: "Апр", value: 5.4 },
+      { date: "Май", value: 5.4 },
+      { date: "Июн", value: 5.4 },
+    ],
+  },
+  {
+    id: "vitd",
+    name: "Витамин D",
+    unit: "нг/мл",
+    system: "Гормоны",
+    tone: "critical",
+    ref: [30, 80],
+    points: [
+      { date: "Янв", value: 9 },
+      { date: "Фев", value: 10 },
+      { date: "Мар", value: 11 },
+      { date: "Апр", value: 11 },
+      { date: "Май", value: 12 },
+      { date: "Июн", value: 12 },
+    ],
+  },
+  {
+    id: "hb",
+    name: "Гемоглобин",
+    unit: "г/л",
+    system: "Кроветворение",
+    tone: "success",
+    ref: [130, 170],
+    points: [
+      { date: "Янв", value: 132 },
+      { date: "Фев", value: 134 },
+      { date: "Мар", value: 135 },
+      { date: "Апр", value: 136 },
+      { date: "Май", value: 137 },
+      { date: "Июн", value: 138 },
+    ],
+  },
+  {
+    id: "tsh",
+    name: "ТТГ",
+    unit: "мЕд/л",
+    system: "Гормоны",
+    tone: "success",
+    ref: [0.4, 4.0],
+    points: [
+      { date: "Янв", value: 2.1 },
+      { date: "Мар", value: 2.3 },
+      { date: "Июн", value: 2.0 },
+    ],
+  },
+];
+
+function computeStatus(s: MetricSeries): { tone: "success" | "warning" | "critical"; label: string } {
+  const last = s.points[s.points.length - 1].value;
+  if (last < s.ref[0] || last > s.ref[1]) {
+    const delta = last < s.ref[0] ? s.ref[0] - last : last - s.ref[1];
+    const pct = (delta / ((s.ref[0] + s.ref[1]) / 2)) * 100;
+    return pct > 25 ? { tone: "critical", label: "Вне нормы" } : { tone: "warning", label: "Близко к границе" };
+  }
+  return { tone: "success", label: "В норме" };
+}
+
+function trendDelta(s: MetricSeries) {
+  const first = s.points[0].value;
+  const last = s.points[s.points.length - 1].value;
+  const diff = last - first;
+  return { diff, up: diff > 0 };
+}
+
 function DynamicsTab() {
-  const changes = [
-    { name: "Ферритин", from: "18", to: "32 нг/мл", trend: "up", note: "Улучшение", tone: "success" as const },
-    { name: "ЛПНП", from: "3.8", to: "4.9 ммоль/л", trend: "up", note: "Повышение", tone: "warning" as const },
-    { name: "Вес", from: "95", to: "89 кг", trend: "down", note: "Снижение", tone: "primary" as const },
-    { name: "АД", from: "150/95", to: "138/88", trend: "down", note: "Улучшение", tone: "success" as const },
-  ];
+  const systems = useMemo(() => Array.from(new Set(METRIC_SERIES.map((m) => m.system))), []);
+  const [filter, setFilter] = useState<string>("Все");
+  const [selectedId, setSelectedId] = useState<string>(METRIC_SERIES[0].id);
+  const filtered = filter === "Все" ? METRIC_SERIES : METRIC_SERIES.filter((m) => m.system === filter);
+  const selected = METRIC_SERIES.find((m) => m.id === selectedId) ?? METRIC_SERIES[0];
+
   return (
     <div className="space-y-5">
-      <section>
-        <SectionTitle title="Динамика показателей" />
-        <div className="grid gap-3 sm:grid-cols-2">
-          {changes.map((c) => (
-            <div key={c.name} className="surface-card p-5">
-              <div className="flex items-center justify-between">
-                <div className="text-sm font-semibold">{c.name}</div>
-                <StatusBadge tone={c.tone}>
-                  {c.trend === "up" ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
-                  {c.note}
-                </StatusBadge>
-              </div>
-              <div className="mt-3 flex items-baseline gap-2 text-lg font-bold">
-                <span className="text-muted-foreground">{c.from}</span>
-                <span className="text-muted-foreground">→</span>
-                <span className="text-gradient-primary">{c.to}</span>
-              </div>
+      {/* Сводные счётчики */}
+      <section className="grid gap-3 sm:grid-cols-4">
+        <SummaryStat value={String(METRIC_SERIES.length)} label="Показателей" tone="primary" />
+        <SummaryStat
+          value={String(METRIC_SERIES.filter((m) => computeStatus(m).tone === "success").length)}
+          label="В норме"
+          tone="success"
+        />
+        <SummaryStat
+          value={String(METRIC_SERIES.filter((m) => computeStatus(m).tone === "warning").length)}
+          label="Требуют внимания"
+          tone="warning"
+        />
+        <SummaryStat
+          value={String(METRIC_SERIES.filter((m) => computeStatus(m).tone === "critical").length)}
+          label="Вне нормы"
+          tone="primary"
+        />
+      </section>
+
+      {/* Большой график выбранного показателя */}
+      <section className="surface-card p-5">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              {selected.system}
             </div>
-          ))}
+            <h3 className="text-lg font-bold">
+              {selected.name}{" "}
+              <span className="text-sm font-normal text-muted-foreground">({selected.unit})</span>
+            </h3>
+            <div className="mt-1 flex items-center gap-2">
+              <span className="text-2xl font-bold text-gradient-primary">
+                {selected.points[selected.points.length - 1].value}
+              </span>
+              <TrendBadge series={selected} />
+            </div>
+          </div>
+          <div className="text-right text-[11px] text-muted-foreground">
+            Норма: <span className="font-semibold text-foreground">{selected.ref[0]}–{selected.ref[1]}</span>
+          </div>
+        </div>
+
+        <div className="mt-4 h-64 w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={selected.points} margin={{ top: 10, right: 16, left: 0, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+              <XAxis dataKey="date" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} />
+              <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} />
+              <Tooltip
+                contentStyle={{
+                  background: "hsl(var(--card))",
+                  border: "1px solid hsl(var(--border))",
+                  borderRadius: 12,
+                  fontSize: 12,
+                }}
+              />
+              <ReferenceArea y1={selected.ref[0]} y2={selected.ref[1]} fill="hsl(var(--success))" fillOpacity={0.08} />
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke="hsl(var(--primary))"
+                strokeWidth={2.5}
+                dot={{ r: 3, fill: "hsl(var(--primary))" }}
+                activeDot={{ r: 5 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </section>
+
+      {/* Фильтр и сетка sparkline */}
+      <section>
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+          <SectionTitle title="Все показатели" hint="Нажмите карточку, чтобы развернуть график" />
+          <div className="flex flex-wrap gap-1.5">
+            {(["Все", ...systems] as string[]).map((s) => (
+              <button
+                key={s}
+                onClick={() => setFilter(s)}
+                className={`rounded-xl px-3 py-1.5 text-xs font-medium transition-colors ${
+                  filter === s
+                    ? "gradient-primary text-primary-foreground shadow-[var(--shadow-glow)]"
+                    : "border border-border bg-card text-foreground hover:bg-muted"
+                }`}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {filtered.map((m) => {
+            const status = computeStatus(m);
+            const trend = trendDelta(m);
+            const last = m.points[m.points.length - 1].value;
+            const isActive = m.id === selectedId;
+            return (
+              <button
+                key={m.id}
+                type="button"
+                onClick={() => setSelectedId(m.id)}
+                className={`surface-card surface-card-hover p-4 text-left transition ${
+                  isActive ? "ring-2 ring-primary" : ""
+                }`}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{m.system}</div>
+                    <div className="text-sm font-semibold">{m.name}</div>
+                  </div>
+                  <StatusBadge tone={status.tone}>{status.label}</StatusBadge>
+                </div>
+
+                <div className="mt-2 flex items-baseline gap-2">
+                  <span className="text-xl font-bold text-foreground">{last}</span>
+                  <span className="text-[11px] text-muted-foreground">{m.unit}</span>
+                  <span
+                    className={`ml-auto inline-flex items-center gap-0.5 text-[11px] font-semibold ${
+                      trend.up ? "text-warning-foreground" : "text-success"
+                    }`}
+                  >
+                    {trend.up ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                    {trend.diff > 0 ? "+" : ""}
+                    {trend.diff.toFixed(1)}
+                  </span>
+                </div>
+
+                <div className="mt-2 h-12 w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={m.points} margin={{ top: 4, right: 0, left: 0, bottom: 0 }}>
+                      <ReferenceArea y1={m.ref[0]} y2={m.ref[1]} fill="hsl(var(--success))" fillOpacity={0.1} />
+                      <Line
+                        type="monotone"
+                        dataKey="value"
+                        stroke={
+                          status.tone === "critical"
+                            ? "hsl(var(--critical))"
+                            : status.tone === "warning"
+                              ? "hsl(var(--warning))"
+                              : "hsl(var(--primary))"
+                        }
+                        strokeWidth={2}
+                        dot={false}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+
+                <div className="mt-1 flex justify-between text-[10px] text-muted-foreground">
+                  <span>{m.points[0].date}</span>
+                  <span>норма {m.ref[0]}–{m.ref[1]}</span>
+                  <span>{m.points[m.points.length - 1].date}</span>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Сводная тепловая полоска */}
+      <section>
+        <SectionTitle title="Карта состояний" hint="Наглядно: что в норме, что требует внимания" />
+        <div className="surface-card overflow-hidden">
+          <div className="divide-y divide-border">
+            {METRIC_SERIES.map((m) => {
+              const status = computeStatus(m);
+              return (
+                <div key={m.id} className="flex items-center gap-3 p-3">
+                  <div className="w-40 shrink-0">
+                    <div className="text-sm font-semibold">{m.name}</div>
+                    <div className="text-[11px] text-muted-foreground">{m.system}</div>
+                  </div>
+                  <div className="flex flex-1 gap-1">
+                    {m.points.map((p, i) => {
+                      const inRange = p.value >= m.ref[0] && p.value <= m.ref[1];
+                      const tone = inRange
+                        ? "bg-success/60"
+                        : p.value > m.ref[1] * 1.25 || p.value < m.ref[0] * 0.75
+                          ? "bg-critical/70"
+                          : "bg-warning/60";
+                      return (
+                        <div
+                          key={i}
+                          title={`${p.date}: ${p.value} ${m.unit}`}
+                          className={`flex-1 rounded-md ${tone} transition-all hover:opacity-80`}
+                          style={{ height: 28 }}
+                        />
+                      );
+                    })}
+                  </div>
+                  <div className="w-24 shrink-0 text-right">
+                    <StatusBadge tone={status.tone}>{status.label}</StatusBadge>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
@@ -633,6 +1205,7 @@ function DynamicsTab() {
           {[
             { name: "Ферритин", when: "через 2 недели" },
             { name: "Липидограмма", when: "через 3 месяца" },
+            { name: "АД (дневник)", when: "ежедневно" },
           ].map((r) => (
             <div key={r.name} className="surface-card flex items-center justify-between gap-3 p-4">
               <div className="flex items-center gap-3">
@@ -650,6 +1223,18 @@ function DynamicsTab() {
         </div>
       </section>
     </div>
+  );
+}
+
+function TrendBadge({ series }: { series: MetricSeries }) {
+  const t = trendDelta(series);
+  const status = computeStatus(series);
+  return (
+    <StatusBadge tone={status.tone}>
+      {t.up ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+      {t.diff > 0 ? "+" : ""}
+      {t.diff.toFixed(1)} {series.unit}
+    </StatusBadge>
   );
 }
 
