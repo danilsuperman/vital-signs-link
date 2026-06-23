@@ -1,5 +1,18 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Bell, LogOut, UserRound, Home, HeartPulse, Stethoscope, Users, Menu } from "lucide-react";
+import {
+  Bell,
+  LogOut,
+  UserRound,
+  Home,
+  HeartPulse,
+  Stethoscope,
+  Users,
+  Menu,
+  Send,
+  Youtube,
+  Instagram,
+  Music2,
+} from "lucide-react";
 import type { ReactNode } from "react";
 
 const NAV = [
@@ -36,7 +49,74 @@ export function PageNav() {
   );
 }
 
-export function AppShell({ children }: { children: ReactNode }) {
+function FooterCol({ title, items }: { title: string; items: string[] }) {
+  return (
+    <div>
+      <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-foreground">{title}</div>
+      <ul className="space-y-1.5 text-xs text-muted-foreground">
+        {items.map((it) => (
+          <li key={it}>
+            <a href="#" className="hover:text-primary">
+              {it}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export function SiteFooter() {
+  return (
+    <footer className="mt-10 border-t border-border pt-8">
+      <div className="grid gap-8 md:grid-cols-5">
+        <div className="md:col-span-1">
+          <div className="flex items-center gap-2">
+            <div className="grid h-8 w-8 place-items-center rounded-xl gradient-primary">
+              <HeartPulse className="h-4 w-4 text-primary-foreground" />
+            </div>
+            <span className="text-base font-bold text-gradient-primary">Лайф</span>
+          </div>
+          <p className="mt-3 text-[11px] text-muted-foreground">
+            Персональная система здравоохранения
+          </p>
+          <div className="mt-4 space-y-1 text-[11px] text-muted-foreground">
+            <div>Горбунов Данила</div>
+            <div>Александрович</div>
+            <div>ИНН: 381208688683</div>
+          </div>
+        </div>
+        <FooterCol
+          title="Для клиента"
+          items={["Поддержка", "Вопросы и ответы", "Стоимость услуг", "Специалисты", "Анализ кожи", "Личный кабинет"]}
+        />
+        <FooterCol title="Для специалистов" items={["Регистрация", "Панель специалиста"]} />
+        <FooterCol title="О нас" items={["Платформа Lify", "Полезный блог", "Контакты"]} />
+        <div>
+          <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-foreground">
+            Lify в соцсетях
+          </div>
+          <div className="flex gap-2">
+            {[Youtube, Send, Instagram, Music2].map((Icon, i) => (
+              <a
+                key={i}
+                href="#"
+                className="grid h-9 w-9 place-items-center rounded-xl bg-muted text-foreground hover:bg-primary hover:text-primary-foreground"
+              >
+                <Icon className="h-4 w-4" />
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="mt-8 border-t border-border pt-4 text-center text-[11px] text-muted-foreground">
+        © {new Date().getFullYear()} Lify. Все права защищены.
+      </div>
+    </footer>
+  );
+}
+
+export function AppShell({ children, hideFooter = false }: { children: ReactNode; hideFooter?: boolean }) {
   return (
     <div className="min-h-screen flex flex-col">
       <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur-xl">
@@ -83,6 +163,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-10 pt-5 md:px-6">
         <PageNav />
         {children}
+        {!hideFooter && <SiteFooter />}
       </main>
     </div>
   );
