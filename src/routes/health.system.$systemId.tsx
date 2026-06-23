@@ -288,7 +288,7 @@ export const SYSTEM_LIST = Object.values(SYSTEMS).map((s) => ({
 }));
 
 export const Route = createFileRoute("/health/system/$systemId")({
-  loader: ({ params }) => {
+  loader: ({ params }): { system: SystemDetail } => {
     const system = SYSTEMS[params.systemId];
     if (!system) throw notFound();
     return { system };
