@@ -107,6 +107,12 @@ function HealthPage() {
 /* ───────── shared ───────── */
 
 function BodyVisualization({ compact = false }: { compact?: boolean }) {
+  const quick = [
+    { id: "heart", label: "Сосуды", tone: "warning" as const },
+    { id: "heart", label: "Сердце", tone: "warning" as const },
+    { id: "hormones", label: "Гормоны", tone: "critical" as const },
+    { id: "nervous", label: "Нервная система", tone: "success" as const },
+  ];
   return (
     <section className="surface-card relative overflow-hidden p-5">
       <div className="absolute inset-0 opacity-[0.05] gradient-primary" aria-hidden />
@@ -117,10 +123,15 @@ function BodyVisualization({ compact = false }: { compact?: boolean }) {
         <div className="flex-1 space-y-2">
           <SectionTitle title="Визуализация организма" hint="Нажмите систему, чтобы открыть подробности" />
           <div className="flex flex-wrap gap-2">
-            <StatusBadge tone="warning">Сосуды</StatusBadge>
-            <StatusBadge tone="warning">Сердце</StatusBadge>
-            <StatusBadge tone="critical">Гормоны</StatusBadge>
-            <StatusBadge tone="success">Нервная система</StatusBadge>
+            {quick.map((q) => (
+              <Link
+                key={q.label}
+                to="/health/system/$systemId"
+                params={{ systemId: q.id }}
+              >
+                <StatusBadge tone={q.tone}>{q.label}</StatusBadge>
+              </Link>
+            ))}
           </div>
         </div>
       </div>
