@@ -755,5 +755,3 @@ function AttentionCard({
   );
 }
 
-// Wrench icon import unused - removed below
-export type _Unused = typeof Wrench;
