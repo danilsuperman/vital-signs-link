@@ -372,8 +372,9 @@ function SystemCard({ s }: { s: typeof SYSTEMS[number] }) {
   const dotColor =
     s.tone === "success" ? "bg-success" : s.tone === "warning" ? "bg-warning" : s.tone === "critical" ? "bg-critical" : "bg-muted-foreground";
   return (
-    <button
-      type="button"
+    <Link
+      to="/health/system/$systemId"
+      params={{ systemId: s.id }}
       className="surface-card surface-card-hover flex flex-col items-start gap-3 p-4 text-left"
     >
       <div className="flex w-full items-center justify-between">
@@ -393,7 +394,7 @@ function SystemCard({ s }: { s: typeof SYSTEMS[number] }) {
         </div>
         <div className="mt-1 text-[11px] font-medium text-primary">{s.note}</div>
       </div>
-    </button>
+    </Link>
   );
 }
 
