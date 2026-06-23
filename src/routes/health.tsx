@@ -275,17 +275,17 @@ function ForecastCard({ title, text, tone }: { title: string; text: string; tone
 /* ───────── Мой организм ───────── */
 
 const SYSTEMS = [
-  { name: "Сердце и сосуды", icon: HeartPulse, tone: "warning" as const, states: 2, risks: 2, data: "Информация достаточна", note: "Есть рекомендация" },
-  { name: "Гормоны", icon: Droplets, tone: "critical" as const, states: 1, risks: 3, data: "Информация частична", note: "Есть рекомендация по анализам" },
-  { name: "Кроветворение", icon: Activity, tone: "warning" as const, states: 1, risks: 1, data: "Информация частична", note: "Контроль ферритина" },
-  { name: "ЖКТ", icon: Activity, tone: "success" as const, states: 0, risks: 1, data: "Информации недостаточно", note: "Есть рекомендация по анализам" },
-  { name: "Иммунитет", icon: Shield, tone: "default" as const, states: 0, risks: 0, data: "Информация отсутствует", note: "Список анализов" },
-  { name: "Нервная система", icon: Brain, tone: "success" as const, states: 0, risks: 0, data: "Информация достаточна", note: "Норма" },
-  { name: "Кожа", icon: User, tone: "warning" as const, states: 1, risks: 1, data: "Информация частична", note: "Акне" },
-  { name: "Опорно-двигательная", icon: Bone, tone: "success" as const, states: 0, risks: 0, data: "Информация достаточна", note: "Норма" },
-  { name: "Мочеполовая", icon: User, tone: "success" as const, states: 0, risks: 0, data: "Информация достаточна", note: "Норма" },
-  { name: "Органы зрения", icon: Eye, tone: "default" as const, states: 0, risks: 0, data: "Информация отсутствует", note: "Запланировать осмотр" },
-  { name: "Органы дыхания", icon: Wind, tone: "success" as const, states: 0, risks: 0, data: "Информация достаточна", note: "Норма" },
+  { id: "heart", name: "Сердце и сосуды", icon: HeartPulse, tone: "warning" as const, states: 2, risks: 2, data: "Информация достаточна", note: "Контроль давления" },
+  { id: "hormones", name: "Гормоны", icon: Droplets, tone: "critical" as const, states: 1, risks: 3, data: "Информация частична", note: "Сдать ТТГ, Т4" },
+  { id: "blood", name: "Кроветворение", icon: Activity, tone: "warning" as const, states: 1, risks: 1, data: "Информация частична", note: "Контроль ферритина" },
+  { id: "gi", name: "ЖКТ", icon: Activity, tone: "success" as const, states: 0, risks: 1, data: "Информации недостаточно", note: "Биохимия, УЗИ ОБП" },
+  { id: "immune", name: "Иммунитет", icon: Shield, tone: "default" as const, states: 0, risks: 0, data: "Информация отсутствует", note: "Базовая иммунограмма" },
+  { id: "nervous", name: "Нервная система", icon: Brain, tone: "success" as const, states: 0, risks: 0, data: "Информация достаточна", note: "Норма" },
+  { id: "skin", name: "Кожа", icon: User, tone: "warning" as const, states: 1, risks: 1, data: "Информация частична", note: "Консультация дерматолога" },
+  { id: "bones", name: "Опорно-двигательная", icon: Bone, tone: "success" as const, states: 0, risks: 0, data: "Информация достаточна", note: "Норма" },
+  { id: "urinary", name: "Мочеполовая", icon: User, tone: "success" as const, states: 0, risks: 0, data: "Информация достаточна", note: "Норма" },
+  { id: "vision", name: "Органы зрения", icon: Eye, tone: "default" as const, states: 0, risks: 0, data: "Информация отсутствует", note: "Запланировать осмотр" },
+  { id: "lungs", name: "Органы дыхания", icon: Wind, tone: "success" as const, states: 0, risks: 0, data: "Информация достаточна", note: "Норма" },
 ];
 
 function BodyTab() {
