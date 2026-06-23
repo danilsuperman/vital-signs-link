@@ -323,7 +323,7 @@ export const Route = createFileRoute("/health/system/$systemId")({
 });
 
 function SystemPage() {
-  const { system } = Route.useLoaderData();
+  const { system } = Route.useLoaderData() as { system: SystemDetail };
   const Icon = system.icon;
   const toneClass: Record<Tone, string> = {
     success: "bg-success/15 text-success",
