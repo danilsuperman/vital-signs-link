@@ -745,7 +745,8 @@ function CaseCard({
         <dd className="font-medium text-foreground">{next}</dd>
       </dl>
       <Link
-        to="/treatment"
+        to="/case/$id"
+        params={{ id: number.replace(/^№/, "") }}
         className="mt-4 flex items-center justify-center gap-1.5 rounded-xl gradient-primary px-3 py-2.5 text-xs font-semibold text-primary-foreground shadow-[var(--shadow-glow)]"
       >
         <FileText className="h-4 w-4" /> Открыть карточку обращения

@@ -14,6 +14,7 @@ import { Route as TeamRouteImport } from './routes/team'
 import { Route as MoreRouteImport } from './routes/more'
 import { Route as HealthRouteImport } from './routes/health'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CaseIdRouteImport } from './routes/case.$id'
 import { Route as ApiIncidentChatRouteImport } from './routes/api/incident-chat'
 import { Route as HealthSystemSystemIdRouteImport } from './routes/health.system.$systemId'
 
@@ -42,6 +43,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CaseIdRoute = CaseIdRouteImport.update({
+  id: '/case/$id',
+  path: '/case/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiIncidentChatRoute = ApiIncidentChatRouteImport.update({
   id: '/api/incident-chat',
   path: '/api/incident-chat',
@@ -60,6 +66,7 @@ export interface FileRoutesByFullPath {
   '/team': typeof TeamRoute
   '/treatment': typeof TreatmentRoute
   '/api/incident-chat': typeof ApiIncidentChatRoute
+  '/case/$id': typeof CaseIdRoute
   '/health/system/$systemId': typeof HealthSystemSystemIdRoute
 }
 export interface FileRoutesByTo {
@@ -69,6 +76,7 @@ export interface FileRoutesByTo {
   '/team': typeof TeamRoute
   '/treatment': typeof TreatmentRoute
   '/api/incident-chat': typeof ApiIncidentChatRoute
+  '/case/$id': typeof CaseIdRoute
   '/health/system/$systemId': typeof HealthSystemSystemIdRoute
 }
 export interface FileRoutesById {
@@ -79,6 +87,7 @@ export interface FileRoutesById {
   '/team': typeof TeamRoute
   '/treatment': typeof TreatmentRoute
   '/api/incident-chat': typeof ApiIncidentChatRoute
+  '/case/$id': typeof CaseIdRoute
   '/health/system/$systemId': typeof HealthSystemSystemIdRoute
 }
 export interface FileRouteTypes {
@@ -90,6 +99,7 @@ export interface FileRouteTypes {
     | '/team'
     | '/treatment'
     | '/api/incident-chat'
+    | '/case/$id'
     | '/health/system/$systemId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -99,6 +109,7 @@ export interface FileRouteTypes {
     | '/team'
     | '/treatment'
     | '/api/incident-chat'
+    | '/case/$id'
     | '/health/system/$systemId'
   id:
     | '__root__'
@@ -108,6 +119,7 @@ export interface FileRouteTypes {
     | '/team'
     | '/treatment'
     | '/api/incident-chat'
+    | '/case/$id'
     | '/health/system/$systemId'
   fileRoutesById: FileRoutesById
 }
@@ -118,6 +130,7 @@ export interface RootRouteChildren {
   TeamRoute: typeof TeamRoute
   TreatmentRoute: typeof TreatmentRoute
   ApiIncidentChatRoute: typeof ApiIncidentChatRoute
+  CaseIdRoute: typeof CaseIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -157,6 +170,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/case/$id': {
+      id: '/case/$id'
+      path: '/case/$id'
+      fullPath: '/case/$id'
+      preLoaderRoute: typeof CaseIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/incident-chat': {
       id: '/api/incident-chat'
       path: '/api/incident-chat'
@@ -192,6 +212,7 @@ const rootRouteChildren: RootRouteChildren = {
   TeamRoute: TeamRoute,
   TreatmentRoute: TreatmentRoute,
   ApiIncidentChatRoute: ApiIncidentChatRoute,
+  CaseIdRoute: CaseIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
