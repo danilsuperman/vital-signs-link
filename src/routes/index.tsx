@@ -602,6 +602,47 @@ function HeroCard({
   );
 }
 
+function UpcomingAction({
+  label,
+  meta,
+  tone,
+  done,
+  onToggle,
+}: {
+  label: string;
+  meta: string;
+  tone: "critical" | "warning" | "primary" | "muted";
+  done: boolean;
+  onToggle: () => void;
+}) {
+  const toneCls = {
+    critical: "border-l-4 border-l-critical",
+    warning: "border-l-4 border-l-warning",
+    primary: "border-l-4 border-l-primary",
+    muted: "border-l-4 border-l-border",
+  }[tone];
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      className={`surface-card surface-card-hover flex w-full items-center gap-3 p-3 text-left ${toneCls}`}
+    >
+      {done ? (
+        <CheckCircle2 className="h-5 w-5 shrink-0 text-success" />
+      ) : (
+        <Circle className="h-5 w-5 shrink-0 text-muted-foreground/40" />
+      )}
+      <div className="flex-1 min-w-0">
+        <div className={`text-sm font-medium ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>
+          {label}
+        </div>
+        <div className="text-[11px] text-muted-foreground">{meta}</div>
+      </div>
+      <ArrowRight className="h-4 w-4 text-muted-foreground" />
+    </button>
+  );
+}
+
 function QuickPill({
   label,
   tone,
