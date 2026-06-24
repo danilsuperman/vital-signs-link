@@ -290,12 +290,13 @@ function UserCaseCard({ c, onShare }: { c: StoredCase; onShare: () => void }) {
         </div>
       )}
 
-      <button
-        type="button"
+      <Link
+        to="/case/$id"
+        params={{ id: c.id }}
         className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-xl gradient-primary px-3 py-2.5 text-xs font-semibold text-primary-foreground shadow-[var(--shadow-glow)]"
       >
         <FileText className="h-4 w-4" /> Открыть карточку обращения
-      </button>
+      </Link>
     </div>
   );
 }
