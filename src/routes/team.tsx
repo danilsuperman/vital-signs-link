@@ -22,6 +22,7 @@ import {
 import { AppShell } from "@/components/app-shell";
 import { SectionTitle, StatusBadge } from "@/components/ui/status";
 import { Tabs } from "@/components/ui/section-tabs";
+import doctorPhoto from "@/assets/doctor-petrov.jpg";
 
 export const Route = createFileRoute("/team")({
   head: () => ({
@@ -62,14 +63,27 @@ function TeamPage() {
               </div>
               <Users className="h-6 w-6 text-primary" />
             </div>
-            <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
               {MY_TEAM.map((d) => (
-                <div key={d.name} className="rounded-xl border border-border bg-card p-3 text-center">
-                  <div className="mx-auto grid h-11 w-11 place-items-center rounded-full gradient-primary text-sm font-bold text-primary-foreground">
-                    {d.initials}
+                <div key={d.name} className="rounded-2xl border border-border bg-card overflow-hidden">
+                  <img
+                    src={doctorPhoto}
+                    alt={d.name}
+                    loading="lazy"
+                    className="aspect-[4/3] w-full object-cover"
+                  />
+                  <div className="p-2.5 text-center">
+                    <div className="text-[11px] font-semibold leading-tight">Ваш {d.role.toLowerCase()}</div>
+                    <div className="text-[11px] text-muted-foreground">{d.name}</div>
+                    <div className="mt-2 grid gap-1.5">
+                      <button className="rounded-lg border border-border bg-card px-2 py-1.5 text-[11px] font-medium hover:bg-muted">
+                        Написать
+                      </button>
+                      <button className="rounded-lg gradient-primary px-2 py-1.5 text-[11px] font-semibold text-primary-foreground">
+                        Записаться
+                      </button>
+                    </div>
                   </div>
-                  <div className="mt-2 text-[11px] font-semibold leading-tight">Ваш {d.role.toLowerCase()}</div>
-                  <div className="text-[11px] text-muted-foreground">{d.name}</div>
                 </div>
               ))}
             </div>
@@ -101,26 +115,23 @@ function MyDoctorsTab() {
         <SectionTitle title="Активная команда" />
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {MY_TEAM.map((d) => (
-            <article key={d.name} className="surface-card p-5">
-              <div className="flex items-center gap-3">
-                <div className="grid h-14 w-14 place-items-center rounded-full gradient-primary text-base font-bold text-primary-foreground">
-                  {d.initials}
+            <article key={d.name} className="surface-card overflow-hidden flex">
+              <img
+                src={doctorPhoto}
+                alt={d.name}
+                loading="lazy"
+                className="aspect-square w-28 shrink-0 object-cover"
+              />
+              <div className="flex-1 p-3">
+                <div className="text-sm font-semibold">{d.role}</div>
+                <div className="text-xs text-muted-foreground">{d.name}</div>
+                <div className="mt-1 text-[11px] text-foreground/80">{d.caseLabel}</div>
+                <div className="text-[11px] text-muted-foreground">Последняя: {d.last}</div>
+                <div className="text-[11px] text-muted-foreground">Следующая: {d.next}</div>
+                <div className="mt-2 grid grid-cols-2 gap-1.5">
+                  <button className="rounded-lg border border-border bg-card px-2 py-1.5 text-[11px] font-medium hover:bg-muted">Написать</button>
+                  <button className="rounded-lg gradient-primary px-2 py-1.5 text-[11px] font-semibold text-primary-foreground">Записаться</button>
                 </div>
-                <div>
-                  <div className="text-sm font-semibold">{d.role}</div>
-                  <div className="text-xs text-muted-foreground">{d.name}</div>
-                </div>
-              </div>
-              <div className="mt-3 space-y-1.5 text-xs text-foreground/85">
-                <div>{d.caseLabel}</div>
-                <div className="text-muted-foreground">Последняя консультация: {d.last}</div>
-                <div className="text-muted-foreground">Следующее действие: {d.next}</div>
-              </div>
-              <div className="mt-4 grid grid-cols-2 gap-2">
-                <button className="rounded-xl border border-border bg-card px-3 py-2 text-xs font-medium hover:bg-muted">Написать</button>
-                <button className="rounded-xl gradient-primary px-3 py-2 text-xs font-semibold text-primary-foreground shadow-[var(--shadow-glow)]">
-                  Записаться
-                </button>
               </div>
             </article>
           ))}
@@ -323,34 +334,36 @@ function FindTab() {
       </section>
 
       <section>
-        <SectionTitle title="Доступны сейчас" />
+        <SectionTitle title="Доступны сейчас" hint="Перед записью врач автоматически получит вашу карту" />
         <div className="grid gap-3 md:grid-cols-2">
           {CATALOG.map((d) => (
-            <article key={d.name} className="surface-card p-5">
-              <div className="flex items-start gap-3">
-                <div className="grid h-12 w-12 place-items-center rounded-full gradient-primary text-sm font-bold text-primary-foreground">
-                  {d.name.split(" ").map((p) => p[0]).join("")}
+            <article key={d.name} className="surface-card overflow-hidden flex">
+              <img
+                src={doctorPhoto}
+                alt={d.name}
+                loading="lazy"
+                className="aspect-square w-32 shrink-0 object-cover"
+              />
+              <div className="flex-1 p-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="text-sm font-semibold leading-tight">{d.name}</div>
+                  <span className="inline-flex items-center gap-0.5 text-xs font-medium">
+                    <Star className="h-3 w-3 fill-warning text-warning" /> {d.rating}
+                  </span>
                 </div>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="text-sm font-semibold">{d.name}</div>
-                    <span className="inline-flex items-center gap-0.5 text-xs font-medium text-warning-foreground">
-                      <Star className="h-3 w-3 fill-warning text-warning" /> {d.rating}
-                    </span>
-                  </div>
-                  <div className="text-xs text-muted-foreground">{d.role} · стаж {d.years} лет</div>
-                  <div className="mt-2 flex items-center justify-between gap-2 text-xs">
-                    <span className="text-foreground/85">Ближайшее время: <span className="font-semibold">{d.slot}</span></span>
-                    <span className="text-muted-foreground">{d.price}</span>
-                  </div>
+                <div className="text-[11px] text-muted-foreground">{d.role} · стаж {d.years} лет</div>
+                <div className="mt-1 text-[11px]">
+                  Ближайшее время: <span className="font-semibold">{d.slot}</span>
+                </div>
+                <div className="mt-2 flex items-center justify-between rounded-lg bg-primary/5 px-2 py-1.5 text-[11px]">
+                  <span className="font-medium">Консультация</span>
+                  <span className="text-muted-foreground">{d.price}</span>
+                </div>
+                <div className="mt-2 grid grid-cols-2 gap-1.5">
+                  <button className="rounded-lg gradient-primary px-2 py-1.5 text-[11px] font-semibold text-primary-foreground">Записаться</button>
+                  <button className="rounded-lg border border-border bg-card px-2 py-1.5 text-[11px] font-medium hover:bg-muted">Профиль</button>
                 </div>
               </div>
-              <div className="mt-3 rounded-xl bg-primary/5 p-2.5 text-[11px] text-foreground/80">
-                Перед записью врач автоматически получит ваши диагнозы, анализы, препараты и аллергии.
-              </div>
-              <button className="mt-3 w-full rounded-xl gradient-primary px-3 py-2 text-xs font-semibold text-primary-foreground shadow-[var(--shadow-glow)]">
-                Записаться
-              </button>
             </article>
           ))}
         </div>

@@ -254,6 +254,21 @@ function HomePage() {
               </div>
             </section>
 
+            {/* Ближайшие действия */}
+            <section>
+              <SectionTitle title="Ближайшие действия" hint="Чек-лист на эту неделю" />
+              <div className="space-y-2">
+                {[
+                  { label: "Сдать ферритин + ОЖСС", meta: "Срочно · просрочено на 9 дней", tone: "critical" as const },
+                  { label: "Пройти УЗИ вен", meta: "В течение месяца · по случаю «Варикоз»", tone: "warning" as const },
+                  { label: "Контроль артериального давления", meta: "Ежедневно утром и вечером", tone: "primary" as const },
+                  { label: "Записаться на ежегодный чекап", meta: "Планово · до 15 июня", tone: "muted" as const },
+                ].map((a, i) => (
+                  <UpcomingAction key={i} {...a} done={!!taken[1000 + i]} onToggle={() => setTaken((t) => ({ ...t, [1000 + i]: !t[1000 + i] }))} />
+                ))}
+              </div>
+            </section>
+
             {/* Назначения */}
             <section>
               <SectionTitle
@@ -584,6 +599,47 @@ function HeroCard({
         </div>
       </div>
     </div>
+  );
+}
+
+function UpcomingAction({
+  label,
+  meta,
+  tone,
+  done,
+  onToggle,
+}: {
+  label: string;
+  meta: string;
+  tone: "critical" | "warning" | "primary" | "muted";
+  done: boolean;
+  onToggle: () => void;
+}) {
+  const toneCls = {
+    critical: "border-l-4 border-l-critical",
+    warning: "border-l-4 border-l-warning",
+    primary: "border-l-4 border-l-primary",
+    muted: "border-l-4 border-l-border",
+  }[tone];
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      className={`surface-card surface-card-hover flex w-full items-center gap-3 p-3 text-left ${toneCls}`}
+    >
+      {done ? (
+        <CheckCircle2 className="h-5 w-5 shrink-0 text-success" />
+      ) : (
+        <Circle className="h-5 w-5 shrink-0 text-muted-foreground/40" />
+      )}
+      <div className="flex-1 min-w-0">
+        <div className={`text-sm font-medium ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>
+          {label}
+        </div>
+        <div className="text-[11px] text-muted-foreground">{meta}</div>
+      </div>
+      <ArrowRight className="h-4 w-4 text-muted-foreground" />
+    </button>
   );
 }
 
