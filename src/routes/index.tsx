@@ -254,6 +254,21 @@ function HomePage() {
               </div>
             </section>
 
+            {/* Ближайшие действия */}
+            <section>
+              <SectionTitle title="Ближайшие действия" hint="Чек-лист на эту неделю" />
+              <div className="space-y-2">
+                {[
+                  { label: "Сдать ферритин + ОЖСС", meta: "Срочно · просрочено на 9 дней", tone: "critical" as const },
+                  { label: "Пройти УЗИ вен", meta: "В течение месяца · по случаю «Варикоз»", tone: "warning" as const },
+                  { label: "Контроль артериального давления", meta: "Ежедневно утром и вечером", tone: "primary" as const },
+                  { label: "Записаться на ежегодный чекап", meta: "Планово · до 15 июня", tone: "muted" as const },
+                ].map((a, i) => (
+                  <UpcomingAction key={i} {...a} done={!!taken[1000 + i]} onToggle={() => setTaken((t) => ({ ...t, [1000 + i]: !t[1000 + i] }))} />
+                ))}
+              </div>
+            </section>
+
             {/* Назначения */}
             <section>
               <SectionTitle
