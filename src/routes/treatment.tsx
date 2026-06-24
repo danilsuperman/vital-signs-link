@@ -230,12 +230,13 @@ function CaseCard({ c, onShare }: { c: RichCase; onShare: () => void }) {
         <Mini icon={Users} label="Команда" value={String(c.team)} />
       </div>
 
-      <button
-        type="button"
+      <Link
+        to="/case/$id"
+        params={{ id: c.number.replace(/^№/, "") }}
         className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-xl gradient-primary px-3 py-2.5 text-xs font-semibold text-primary-foreground shadow-[var(--shadow-glow)]"
       >
         <FileText className="h-4 w-4" /> Открыть карточку обращения
-      </button>
+      </Link>
     </div>
   );
 }
