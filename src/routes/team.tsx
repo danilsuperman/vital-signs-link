@@ -22,6 +22,7 @@ import {
 import { AppShell } from "@/components/app-shell";
 import { SectionTitle, StatusBadge } from "@/components/ui/status";
 import { Tabs } from "@/components/ui/section-tabs";
+import doctorPhoto from "@/assets/doctor-petrov.jpg";
 
 export const Route = createFileRoute("/team")({
   head: () => ({
