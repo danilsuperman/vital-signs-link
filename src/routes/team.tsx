@@ -62,14 +62,27 @@ function TeamPage() {
               </div>
               <Users className="h-6 w-6 text-primary" />
             </div>
-            <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
               {MY_TEAM.map((d) => (
-                <div key={d.name} className="rounded-xl border border-border bg-card p-3 text-center">
-                  <div className="mx-auto grid h-11 w-11 place-items-center rounded-full gradient-primary text-sm font-bold text-primary-foreground">
-                    {d.initials}
+                <div key={d.name} className="rounded-2xl border border-border bg-card overflow-hidden">
+                  <img
+                    src={doctorPhoto}
+                    alt={d.name}
+                    loading="lazy"
+                    className="aspect-[4/3] w-full object-cover"
+                  />
+                  <div className="p-2.5 text-center">
+                    <div className="text-[11px] font-semibold leading-tight">Ваш {d.role.toLowerCase()}</div>
+                    <div className="text-[11px] text-muted-foreground">{d.name}</div>
+                    <div className="mt-2 grid gap-1.5">
+                      <button className="rounded-lg border border-border bg-card px-2 py-1.5 text-[11px] font-medium hover:bg-muted">
+                        Написать
+                      </button>
+                      <button className="rounded-lg gradient-primary px-2 py-1.5 text-[11px] font-semibold text-primary-foreground">
+                        Записаться
+                      </button>
+                    </div>
                   </div>
-                  <div className="mt-2 text-[11px] font-semibold leading-tight">Ваш {d.role.toLowerCase()}</div>
-                  <div className="text-[11px] text-muted-foreground">{d.name}</div>
                 </div>
               ))}
             </div>
