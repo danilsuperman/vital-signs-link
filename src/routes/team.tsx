@@ -115,26 +115,23 @@ function MyDoctorsTab() {
         <SectionTitle title="Активная команда" />
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {MY_TEAM.map((d) => (
-            <article key={d.name} className="surface-card p-5">
-              <div className="flex items-center gap-3">
-                <div className="grid h-14 w-14 place-items-center rounded-full gradient-primary text-base font-bold text-primary-foreground">
-                  {d.initials}
+            <article key={d.name} className="surface-card overflow-hidden flex">
+              <img
+                src={doctorPhoto}
+                alt={d.name}
+                loading="lazy"
+                className="aspect-square w-28 shrink-0 object-cover"
+              />
+              <div className="flex-1 p-3">
+                <div className="text-sm font-semibold">{d.role}</div>
+                <div className="text-xs text-muted-foreground">{d.name}</div>
+                <div className="mt-1 text-[11px] text-foreground/80">{d.caseLabel}</div>
+                <div className="text-[11px] text-muted-foreground">Последняя: {d.last}</div>
+                <div className="text-[11px] text-muted-foreground">Следующая: {d.next}</div>
+                <div className="mt-2 grid grid-cols-2 gap-1.5">
+                  <button className="rounded-lg border border-border bg-card px-2 py-1.5 text-[11px] font-medium hover:bg-muted">Написать</button>
+                  <button className="rounded-lg gradient-primary px-2 py-1.5 text-[11px] font-semibold text-primary-foreground">Записаться</button>
                 </div>
-                <div>
-                  <div className="text-sm font-semibold">{d.role}</div>
-                  <div className="text-xs text-muted-foreground">{d.name}</div>
-                </div>
-              </div>
-              <div className="mt-3 space-y-1.5 text-xs text-foreground/85">
-                <div>{d.caseLabel}</div>
-                <div className="text-muted-foreground">Последняя консультация: {d.last}</div>
-                <div className="text-muted-foreground">Следующее действие: {d.next}</div>
-              </div>
-              <div className="mt-4 grid grid-cols-2 gap-2">
-                <button className="rounded-xl border border-border bg-card px-3 py-2 text-xs font-medium hover:bg-muted">Написать</button>
-                <button className="rounded-xl gradient-primary px-3 py-2 text-xs font-semibold text-primary-foreground shadow-[var(--shadow-glow)]">
-                  Записаться
-                </button>
               </div>
             </article>
           ))}
